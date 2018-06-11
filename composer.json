@@ -1,0 +1,20 @@
+{
+  "name": "drupal/oh",
+  "type": "drupal-module",
+  "description": "Alternative opening hours module.",
+  "keywords": ["Drupal"],
+  "license": "GPL-2.0+",
+  "homepage": "https://www.drupal.org/project/oh",
+  "minimum-stability": "dev",
+  "support": {
+    "issues": "https://www.drupal.org/project/issues/oh",
+    "source": "http://cgit.drupalcode.org/oh"
+  },
+  "config": {
+    "sort-packages": true
+  },
+  "require": {
+    "php": "~7.1",
+    "drupal/date_recur": "*"
+  }
+}
