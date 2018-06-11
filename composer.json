@@ -16,5 +16,16 @@
   "require": {
     "php": "~7.1",
     "drupal/date_recur": "*"
-  }
+  },
+  "require-dev": {
+    "drupal/coder": "^8.2.12",
+    "phpunit/phpunit": "5",
+    "squizlabs/php_codesniffer": "^2.7"
+  },
+  "repositories": [
+    {
+      "type": "composer",
+      "url": "https://packages.drupal.org/8"
+    }
+  ]
 }

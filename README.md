@@ -2,6 +2,8 @@ Alternative opening hours module.
 
 https://www.drupal.org/project/oh
 
+[![CircleCI](https://circleci.com/gh/dpi/oh/tree/8.x-1.x.svg?style=svg)](https://circleci.com/gh/dpi/oh/tree/8.x-1.x)
+
 Copyright (C) 2018 Daniel Phin (@dpi)
 
 # License
