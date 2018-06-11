@@ -106,6 +106,12 @@ class OhDateRange {
       if ($this->start->getTimezone()->getName() !== $this->end->getTimezone()->getName()) {
         throw new \InvalidArgumentException('Provided dates must be in same timezone.');
       }
+
+      $start = OhUtility::toPhpDateTime($this->start);
+      $end = OhUtility::toPhpDateTime($this->end);
+      if ($end < $start) {
+        throw new \InvalidArgumentException('End date must not occur before start date.');
+      }
     }
   }
 
