@@ -40,7 +40,7 @@ class OhExceptionEvent extends Event {
    *
    * @param \Drupal\Core\Entity\EntityInterface $entity
    *   The location.
-   * @param \Drupal\oh\OhDateRange
+   * @param \Drupal\oh\OhDateRange $range
    *   Get exceptions between a range of dates.
    */
   public function __construct(EntityInterface $entity, OhDateRange $range) {

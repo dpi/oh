@@ -49,7 +49,7 @@ class OhOpeningHours implements OhOpeningHoursInterface {
         // Remove any regular hour occurrences on the same day as exceptions.
         $occurrences = array_filter($occurrences, function (OhOccurrence $occurrence) use ($dayKey) {
           // Note: Don't account for multi-day. Instead exception-event should
-          // produce exceptions for each day
+          // produce exceptions for each day.
           return $occurrence->getStart()->format(static::DAY_FORMAT) !== $dayKey;
         });
       }

@@ -69,7 +69,10 @@ class OhDateRange {
   }
 
   /**
+   * Get the end date.
+   *
    * @return \Drupal\Core\Datetime\DrupalDateTime
+   *   The end date.
    */
   public function getEnd(): DrupalDateTime {
     return $this->end;

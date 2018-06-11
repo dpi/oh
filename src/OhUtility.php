@@ -20,6 +20,7 @@ class OhUtility {
    * @see https://www.drupal.org/node/2936388
    *
    * @return \Datetime
+   *   A PHP datetime object.
    *
    * @deprecated remove when at least Drupal 8.6 is minimum supported version.
    *   Use \Drupal\Core\Datetime\DrupalDateTime::getPhpDateTime() instead.

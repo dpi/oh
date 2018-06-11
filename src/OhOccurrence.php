@@ -13,14 +13,14 @@ class OhOccurrence extends OhDateRange {
   /**
    * Message to add to the occurrence.
    *
-   * @var string|NULL
+   * @var string|null
    */
   protected $message;
 
   /**
    * Set the message for the occurrence.
    *
-   * @param string|NULL $message
+   * @param string|null $message
    *   The message for the occurrence, or NULL if no message.
    *
    * @return $this
@@ -34,7 +34,7 @@ class OhOccurrence extends OhDateRange {
   /**
    * Get the message for the occurrence.
    *
-   * @return string|NULL
+   * @return string|null
    *   The message for the occurrence, or NULL if no message.
    */
   public function getMessage(): ?string {
