@@ -103,7 +103,7 @@ class OhDateRange {
   protected function validateDates() {
     // Wait until both start and end are set before validating.
     if ($this->start && $this->end) {
-      if ($this->start->getTimezone()->getName() !== $this->start->getTimezone()->getName()) {
+      if ($this->start->getTimezone()->getName() !== $this->end->getTimezone()->getName()) {
         throw new \InvalidArgumentException('Provided dates must be in same timezone.');
       }
     }
