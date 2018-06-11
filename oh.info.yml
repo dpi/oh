@@ -4,3 +4,4 @@ description: 'Alternative opening hours module.'
 dependencies:
   - date_recur:date_recur
 core: 8.x
+php: 7.1
