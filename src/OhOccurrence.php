@@ -2,13 +2,15 @@
 
 namespace Drupal\oh;
 
+use Drupal\Core\Cache\RefinableCacheableDependencyInterface;
+use Drupal\Core\Cache\RefinableCacheableDependencyTrait;
+
 /**
  * Defines an opening hours occurrence.
- *
- * @todo implement RefinableCacheableDependencyInterface.
- * @todo and use \Drupal\Core\Cache\RefinableCacheableDependencyTrait.
  */
-class OhOccurrence extends OhDateRange {
+class OhOccurrence extends OhDateRange implements RefinableCacheableDependencyInterface {
+
+  use RefinableCacheableDependencyTrait;
 
   /**
    * Message to add to the occurrence.
