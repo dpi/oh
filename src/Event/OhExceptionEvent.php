@@ -81,7 +81,7 @@ class OhExceptionEvent extends Event {
    *   If the added exception is outside of the requested range.
    */
   public function addException(OhOccurrence $occurrence) {
-    if ($occurrence->isBetween($this->range)) {
+    if ($this->range->isWithin($occurrence)) {
       $this->exceptions[] = $occurrence;
     }
     return $this;

@@ -134,10 +134,10 @@ class OhDateRange {
   }
 
   /**
-   * Ensures this date range occurs within another date range.
+   * Ensures a date range occurs within this date range.
    *
-   * @param \Drupal\oh\OhDateRange $outerRange
-   *   The outer date range.
+   * @param \Drupal\oh\OhDateRange $innerRange
+   *   The inner date range.
    *
    * @return bool
    *   Returns true if inner range is within outer range. Exception otherwise.
@@ -145,11 +145,11 @@ class OhDateRange {
    * @throws \Exception
    *   Thrown if this date range exceeds the boundaries of the outer date range.
    */
-  public function isBetween(OhDateRange $outerRange): bool {
-    $outerStart = OhUtility::toPhpDateTime($outerRange->getStart());
-    $outerEnd = OhUtility::toPhpDateTime($outerRange->getEnd());
+  public function isWithin(OhDateRange $innerRange): bool {
+    $outerStart = OhUtility::toPhpDateTime($this->start);
+    $outerEnd = OhUtility::toPhpDateTime($this->end);
 
-    $innerStart = OhUtility::toPhpDateTime($this->start);
+    $innerStart = OhUtility::toPhpDateTime($innerRange->getStart());
     if ($innerStart < $outerStart) {
       throw new \Exception('Inner date starts before outer date starts.');
     }
@@ -157,7 +157,7 @@ class OhDateRange {
       throw new \Exception('Inner date starts after outer date ends.');
     }
 
-    $innerEnd = OhUtility::toPhpDateTime($this->end);
+    $innerEnd = OhUtility::toPhpDateTime($innerRange->getEnd());
     if ($innerEnd < $outerStart) {
       throw new \Exception('Inner date ends before outer date starts.');
     }
