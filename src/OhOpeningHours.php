@@ -6,7 +6,6 @@ use Drupal\Core\Entity\EntityInterface;
 use Drupal\oh\Event\OhEvents;
 use Drupal\oh\Event\OhExceptionEvent;
 use Drupal\oh\Event\OhRegularEvent;
-use Drupal\oh\OhUtility;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
 /**
