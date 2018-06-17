@@ -5,6 +5,7 @@ namespace Drupal\oh;
 use Drupal\Core\Entity\EntityInterface;
 use Drupal\oh\Event\OhEvents;
 use Drupal\oh\Event\OhExceptionEvent;
+use Drupal\oh\Event\OhRegularEvent;
 use Drupal\oh\OhUtility;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
@@ -67,27 +68,9 @@ class OhOpeningHours implements OhOpeningHoursInterface {
    * {@inheritdoc}
    */
   public function getRegularHours(EntityInterface $entity, OhDateRange $range): array {
-    // @todo configurable.
-    $fieldName = 'field_regular';
-
-    $betweenStart = OhUtility::toPhpDateTime($range->getStart());
-    $betweenEnd = OhUtility::toPhpDateTime($range->getEnd());
-
-    $occurrences = [];
-    foreach ($entity->{$fieldName} as $delta => $item) {
-      /** @var \Drupal\date_recur\Plugin\Field\FieldType\DateRecurItem $item */
-
-      // Occurrences uses PHP date time.
-      // If you pass DrupalDateTime then it will never terminate because you
-      // cannot compare DrupalDateTime with DateTime.
-      $itemOccurrences = $item->getOccurrenceHandler()
-        ->getOccurrencesForDisplay($betweenStart, $betweenEnd);
-      foreach ($itemOccurrences as $itemOccurrence) {
-        $occurrences[] = new OhOccurrence($itemOccurrence['value'], $itemOccurrence['end_value']);
-      }
-    }
-
-    return $occurrences;
+    $event = new OhRegularEvent($entity, $range);
+    $this->eventDispatcher->dispatch(OhEvents::REGULAR, $event);
+    return $event->getRegularHours();
   }
 
   /**

@@ -8,6 +8,15 @@ namespace Drupal\oh\Event;
 final class OhEvents {
 
   /**
+   * Used to add regular hours between a date range.
+   *
+   * @Event
+   *
+   * @see \Drupal\oh\Event\OhRegularEvent
+   */
+  const REGULAR = 'oh.regular';
+
+  /**
    * Used to add exceptions between a date range.
    *
    * @Event
