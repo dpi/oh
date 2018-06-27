@@ -71,6 +71,7 @@ class OhRegularSubscriber implements EventSubscriberInterface {
           ->getOccurrencesForDisplay($betweenStart, $betweenEnd);
         foreach ($itemOccurrences as $itemOccurrence) {
           $occurrence = new OhOccurrence($itemOccurrence['value'], $itemOccurrence['end_value']);
+          $occurrence->setIsOpen(TRUE);
           $event->addRegularHours($occurrence);
         }
       }
