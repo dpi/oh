@@ -22,7 +22,15 @@ interface OhRegularInterface {
   public function hasOpeningHours(EntityInterface $entity): AccessResultInterface;
 
   /**
-   * Get field mapping.
+   * Get field mapping for all bundles.
+   *
+   * @return array
+   *   Fields keyed by entity type and bundle.
+   */
+  public function getAllMapping(): array;
+
+  /**
+   * Get field mapping for a bundle.
    *
    * @param string $entityTypeId
    *   The entity type Id.

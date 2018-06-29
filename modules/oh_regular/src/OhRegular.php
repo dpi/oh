@@ -62,7 +62,7 @@ class OhRegular implements OhRegularInterface {
   /**
    * {@inheritdoc}
    */
-  public function getMapping(string $entityTypeId, string $bundle): array {
+  public function getAllMapping(): array {
     $mapping = $this->cache->get(static::REGULAR_MAPPING_CID);
     if (FALSE === $mapping) {
       /** @var \Drupal\oh_regular\OhRegularMapInterface[] $maps */
@@ -84,6 +84,14 @@ class OhRegular implements OhRegularInterface {
       $mapping = $mapping->data;
     }
 
+    return $mapping;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function getMapping(string $entityTypeId, string $bundle): array {
+    $mapping = $this->cache->get(static::REGULAR_MAPPING_CID)->data;
     return $mapping[$entityTypeId][$bundle] ?? [];
   }
 
