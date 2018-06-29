@@ -2,14 +2,10 @@
 
 namespace Drupal\oh_regular;
 
-use Drupal\Core\Cache\Cache;
-use Drupal\Core\Cache\CacheBackendInterface;
-use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\oh\Event\OhEvents;
 use Drupal\oh\Event\OhRegularEvent;
 use Drupal\oh\OhOccurrence;
 use Drupal\oh\OhUtility;
-use Drupal\oh_regular\Entity\OhRegularMap;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
 /**
@@ -17,33 +13,21 @@ use Symfony\Component\EventDispatcher\EventSubscriberInterface;
  */
 class OhRegularSubscriber implements EventSubscriberInterface {
 
-  const REGULAR_MAPPING_CID = 'oh:field_mapping:regular';
-
   /**
-   * Regular map storage.
+   * OH regular service.
    *
-   * @var \Drupal\Core\Entity\EntityStorageInterface
+   * @var \Drupal\oh_regular\OhRegularInterface
    */
-  protected $regularMapStorage;
-
-  /**
-   * Cache backend.
-   *
-   * @var \Drupal\Core\Cache\CacheBackendInterface
-   */
-  protected $cache;
+  protected $ohRegular;
 
   /**
    * Construct OhRegularSubscriber service.
    *
-   * @param \Drupal\Core\Entity\EntityTypeManagerInterface $entityTypeManager
-   *   The entity type manager.
-   * @param \Drupal\Core\Cache\CacheBackendInterface $cache
-   *   Cache backend.
+   * @param \Drupal\oh_regular\OhRegularInterface $ohRegular
+   *   OH regular service.
    */
-  public function __construct(EntityTypeManagerInterface $entityTypeManager, CacheBackendInterface $cache) {
-    $this->regularMapStorage = $entityTypeManager->getStorage('oh_regular_map');
-    $this->cache = $cache;
+  public function __construct(OhRegularInterface $ohRegular) {
+    $this->ohRegular = $ohRegular;
   }
 
   /**
@@ -54,7 +38,7 @@ class OhRegularSubscriber implements EventSubscriberInterface {
    */
   public function regularHoursField(OhRegularEvent $event): void {
     $entity = $event->getEntity();
-    $mapping = $this->getMapping($entity->getEntityTypeId(), $entity->bundle());
+    $mapping = $this->ohRegular->getMapping($entity->getEntityTypeId(), $entity->bundle());
 
     $range = $event->getRange();
     $betweenStart = OhUtility::toPhpDateTime($range->getStart());
@@ -84,42 +68,6 @@ class OhRegularSubscriber implements EventSubscriberInterface {
   public static function getSubscribedEvents(): array {
     $events[OhEvents::REGULAR][] = ['regularHoursField'];
     return $events;
-  }
-
-  /**
-   * Get field mapping.
-   *
-   * @param string $entityTypeId
-   *   The entity type Id.
-   * @param string $bundle
-   *   The bundle.
-   *
-   * @return array
-   *   List of field names.
-   */
-  protected function getMapping(string $entityTypeId, string $bundle): array {
-    $mapping = $this->cache->get(static::REGULAR_MAPPING_CID);
-    if (FALSE === $mapping) {
-      /** @var \Drupal\oh_regular\OhRegularMapInterface[] $maps */
-      $maps = $this->regularMapStorage->loadMultiple();
-      $mapping = [];
-      foreach ($maps as $map) {
-        $mapping[$map->getMapEntityType()][$map->getMapBundle()] = array_map(
-          function (array $fieldMap) {
-            return $fieldMap['field_name'];
-          },
-          $map->getRegularFields()
-        );
-      }
-
-      $this->cache
-        ->set(static::REGULAR_MAPPING_CID, $mapping, Cache::PERMANENT, [OhRegularMap::CACHE_TAG_ALL]);
-    }
-    else {
-      $mapping = $mapping->data;
-    }
-
-    return $mapping[$entityTypeId][$bundle] ?? [];
   }
 
 }

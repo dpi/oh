@@ -1,6 +1,11 @@
 services:
   oh_regular.store_closures:
     class: Drupal\oh_regular\OhRegularSubscriber
-    arguments: ['@entity_type.manager', '@cache.default']
+    arguments: ['@oh_regular.mapping']
     tags:
       - { name: event_subscriber }
+
+  oh_regular.mapping:
+    class: Drupal\oh_regular\OhRegular
+    arguments: ['@entity_type.manager', '@cache.default']
+
