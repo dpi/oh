@@ -98,9 +98,10 @@ class OhRegularMapForm extends EntityForm {
     ['Content' => $contentEntityTypes] = $this->entityTypeRepository->getEntityTypeLabels(TRUE);
     $bundleInfo = $this->entityTypeBundleInfo->getAllBundleInfo();
 
-    $after = array_intersect_key($bundleInfo, $contentEntityTypes);
+    // Compute intersection of content entities and bundle info.
+    $contentBundles = array_intersect_key($bundleInfo, $contentEntityTypes);
     $bundleOptions = [];
-    foreach ($after as $entityTypeId => $bundles) {
+    foreach ($contentBundles as $entityTypeId => $bundles) {
       $group = (string) $contentEntityTypes[$entityTypeId];
       foreach ($bundles as $bundle => $bundleInfo) {
         $key = sprintf('%s.%s', $entityTypeId, $bundle);
