@@ -70,7 +70,7 @@ class OhOccurrenceTest extends KernelTestBase {
    *
    * @covers ::getCacheContexts
    * @covers ::getCacheTags
-   * @covers ::getCacheMaxAge()
+   * @covers ::getCacheMaxAge
    */
   public function testCachability() {
     $occurrence = $this->createOccurrence();

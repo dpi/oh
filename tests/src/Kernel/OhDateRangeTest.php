@@ -25,8 +25,8 @@ class OhDateRangeTest extends KernelTestBase {
   /**
    * Tests start and end getters.
    *
-   * @covers ::getStart()
-   * @covers ::getEnd()
+   * @covers ::getStart
+   * @covers ::getEnd
    */
   public function testGetters() {
     $start = new DrupalDateTime('yesterday');
@@ -40,7 +40,7 @@ class OhDateRangeTest extends KernelTestBase {
   /**
    * Tests same time zone validation.
    *
-   * @covers ::validateDates()
+   * @covers ::validateDates
    */
   public function testTimeZoneValidation() {
     $start = new DrupalDateTime('yesterday', 'Australia/Sydney');
@@ -58,7 +58,7 @@ class OhDateRangeTest extends KernelTestBase {
   /**
    * Tests end occur on or after start.
    *
-   * @covers ::validateDates()
+   * @covers ::validateDates
    */
   public function testEndAfterStartValidation() {
     // Same time.
@@ -85,7 +85,7 @@ class OhDateRangeTest extends KernelTestBase {
   /**
    * Tests object sorting.
    *
-   * @covers ::sort()
+   * @covers ::sort
    */
   public function testSort() {
     /** @var \Drupal\oh\OhDateRange[] $ranges */
@@ -112,7 +112,7 @@ class OhDateRangeTest extends KernelTestBase {
   /**
    * Tests isWithin utility
    *
-   * @covers ::isWithin()
+   * @covers ::isWithin
    */
   public function testIsWithin() {
     $outerStart = new DrupalDateTime('1 January 2016');
@@ -134,7 +134,7 @@ class OhDateRangeTest extends KernelTestBase {
   /**
    * Tests isWithin utility inner-start starts before outer-end.
    *
-   * @covers ::isWithin()
+   * @covers ::isWithin
    */
   public function testIsWithinInvalidInnerStartBeforeOuterStart() {
     $outerStart = new DrupalDateTime('1 January 2016');
@@ -152,7 +152,7 @@ class OhDateRangeTest extends KernelTestBase {
   /**
    * Tests isWithin utility inner-start starts after outer-end.
    *
-   * @covers ::isWithin()
+   * @covers ::isWithin
    */
   public function testIsWithinInvalidInnerStartAfterOuterEnd() {
     $outerStart = new DrupalDateTime('1 January 2016');
@@ -170,7 +170,7 @@ class OhDateRangeTest extends KernelTestBase {
   /**
    * Tests isWithin utility inner-end ends after outer-end.
    *
-   * @covers ::isWithin()
+   * @covers ::isWithin
    */
   public function testIsWithinInvalidInnerEndAfterOuterEnd() {
     $outerStart = new DrupalDateTime('1 January 2016');
