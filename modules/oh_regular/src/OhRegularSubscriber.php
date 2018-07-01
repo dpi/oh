@@ -54,8 +54,9 @@ class OhRegularSubscriber implements EventSubscriberInterface {
         $itemOccurrences = $item->getOccurrenceHandler()
           ->getOccurrencesForDisplay($betweenStart, $betweenEnd);
         foreach ($itemOccurrences as $itemOccurrence) {
-          $occurrence = new OhOccurrence($itemOccurrence['value'], $itemOccurrence['end_value']);
-          $occurrence->setIsOpen(TRUE);
+          $occurrence = (new OhOccurrence($itemOccurrence['value'], $itemOccurrence['end_value']))
+            ->addCacheableDependency($entity)
+            ->setIsOpen(TRUE);
           $event->addRegularHours($occurrence);
         }
       }
