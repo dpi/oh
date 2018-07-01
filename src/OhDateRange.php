@@ -119,7 +119,7 @@ class OhDateRange {
   }
 
   /**
-   * Helper callback for uasort() to sort date range objects by start time.
+   * Helper callback for usort() to sort date range objects by start time.
    *
    * @param \Drupal\oh\OhDateRange $a
    *   A date range object.
@@ -151,18 +151,17 @@ class OhDateRange {
 
     $innerStart = OhUtility::toPhpDateTime($innerRange->getStart());
     if ($innerStart < $outerStart) {
-      throw new \Exception('Inner date starts before outer date starts.');
+      throw new \Exception('Inner date starts before outer date.');
     }
     if ($innerStart > $outerEnd) {
-      throw new \Exception('Inner date starts after outer date ends.');
+      throw new \Exception('Inner date starts after outer date.');
     }
 
     $innerEnd = OhUtility::toPhpDateTime($innerRange->getEnd());
-    if ($innerEnd < $outerStart) {
-      throw new \Exception('Inner date ends before outer date starts.');
-    }
+    // Dont test for inner end less than outer start because inner-start <
+    // outer-start throw first.
     if ($innerEnd > $outerEnd) {
-      throw new \Exception('Inner date ends after outer date ends.');
+      throw new \Exception('Inner date ends after outer date.');
     }
 
     return TRUE;
