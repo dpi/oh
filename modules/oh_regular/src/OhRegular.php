@@ -91,7 +91,7 @@ class OhRegular implements OhRegularInterface {
    * {@inheritdoc}
    */
   public function getMapping(string $entityTypeId, string $bundle): array {
-    $mapping = $this->cache->get(static::REGULAR_MAPPING_CID)->data;
+    $mapping = $this->getAllMapping();
     return $mapping[$entityTypeId][$bundle] ?? [];
   }
 
