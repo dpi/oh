@@ -1,0 +1,5 @@
+occurrences_list:
+  version: VERSION
+  css:
+    layout:
+      css/oh-review-occurrences-list.css: {}
