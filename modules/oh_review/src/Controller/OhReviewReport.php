@@ -155,11 +155,16 @@ class OhReviewReport extends ControllerBase {
         ->getStorage($entityTypeId);
 
       $query = $storage->getQuery();
+      $entityTypeDefinition = $this->entityTypeManager()
+        ->getDefinition($entityTypeId);
+
+      $labelKey = $entityTypeDefinition->getKey('label');
+      if ($labelKey) {
+        $query->sort($labelKey, 'ASC');
+      }
 
       // Check if this entity supports bundles.
-      $bundlesKey = $this->entityTypeManager()
-        ->getDefinition($entityTypeId)
-        ->getKey('bundle');
+      $bundlesKey = $entityTypeDefinition->getKey('bundle');
       if ($bundlesKey) {
         $bundles = array_keys($mapping);
         $query->condition($bundlesKey, $bundles, 'IN');
