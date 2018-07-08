@@ -10,6 +10,7 @@ use Drupal\Core\Template\Attribute;
 use Drupal\oh\OhOccurrence;
 use Drupal\oh\OhUtility;
 use Drupal\oh_review\Form\OhReviewSidebarForm;
+use Drupal\oh_review\OhReviewUtility;
 
 /**
  * Implements hook_theme().
@@ -68,25 +69,8 @@ function template_preprocess_oh_review_occurrences_list(array &$variables): void
   $todayString = (new DateTime('now'))->format($dayFormat);
   $currentWeekString = (new DateTime('now'))->format($weekFormat);
 
-  $groupedOccurrences = [];
-  foreach ($occurrences as $occurrence) {
-    $week = $occurrence->getStart()->format($weekFormat);
-    $day = $occurrence->getStart()->format($dayFormat);
-    $groupedOccurrences[$week][$day][] = $occurrence;
-  }
-
-  if (OhReviewSidebarForm::PREVIEW_MODE_ALL === $variables['mode']) {
-    $fillPointer = OhUtility::toPhpDateTime($range->getStart());
-    $fillEnd = OhUtility::toPhpDateTime($range->getEnd());
-    while ($fillPointer < $fillEnd) {
-      $pointerWeek = $fillPointer->format($weekFormat);
-      $pointerDay = $fillPointer->format($dayFormat);
-      if (!isset($groupedOccurrences[$pointerWeek][$pointerDay])) {
-        $groupedOccurrences[$pointerWeek][$pointerDay] = [];
-      }
-      $fillPointer->modify('+1 day');
-    }
-  }
+  $fillDays = OhReviewSidebarForm::PREVIEW_MODE_ALL === $variables['mode'];
+  $groupedOccurrences = OhReviewUtility::occurrencesByWeek($range, $occurrences, $fillDays);
 
   $weeks = [];
   foreach ($groupedOccurrences as $weekCode => $days) {
