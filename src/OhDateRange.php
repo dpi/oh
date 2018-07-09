@@ -98,6 +98,16 @@ class OhDateRange {
   }
 
   /**
+   * Calculates the difference between the start and end dates.
+   *
+   * @return \DateInterval
+   *   The difference between the start and end dates.
+   */
+  public function diff(): \DateInterval {
+    return $this->end->diff($this->start);
+  }
+
+  /**
    * Validates the start and end dates.
    *
    * @throws \InvalidArgumentException
