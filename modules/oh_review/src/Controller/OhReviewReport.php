@@ -139,6 +139,7 @@ class OhReviewReport extends ControllerBase {
     ];
 
     $cachability->applyTo($build);
+    $build['#cache']['keys'][] = 'oh_review_report';
     return $build;
   }
 
