@@ -148,6 +148,8 @@ class OhDateRange {
    *
    * @param \Drupal\oh\OhDateRange $innerRange
    *   The inner date range.
+   * @param bool $partial
+   *   Changes the mode so inner values must intersect outer values in any way.
    *
    * @return bool
    *   Returns true if inner range is within outer range. Exception otherwise.
@@ -155,23 +157,34 @@ class OhDateRange {
    * @throws \Exception
    *   Thrown if this date range exceeds the boundaries of the outer date range.
    */
-  public function isWithin(OhDateRange $innerRange): bool {
+  public function isWithin(OhDateRange $innerRange, bool $partial = FALSE): bool {
     $outerStart = OhUtility::toPhpDateTime($this->start);
     $outerEnd = OhUtility::toPhpDateTime($this->end);
 
     $innerStart = OhUtility::toPhpDateTime($innerRange->getStart());
-    if ($innerStart < $outerStart) {
-      throw new \Exception('Inner date starts before outer date.');
-    }
-    if ($innerStart > $outerEnd) {
-      throw new \Exception('Inner date starts after outer date.');
-    }
-
     $innerEnd = OhUtility::toPhpDateTime($innerRange->getEnd());
-    // Dont test for inner end less than outer start because inner-start <
-    // outer-start throw first.
-    if ($innerEnd > $outerEnd) {
-      throw new \Exception('Inner date ends after outer date.');
+
+    if ($partial) {
+      // Either inner value must be within.
+      if ($innerStart < $outerStart && $innerEnd > $outerEnd) {
+        throw new \Exception('Either inner value is not within outer dates.');
+      }
+    }
+    else {
+      if ($innerStart < $outerStart) {
+        if (!$partial || $innerStart > $outerEnd) {
+          throw new \Exception('Inner date starts before outer date.');
+        }
+      }
+      if ($innerStart > $outerEnd) {
+        throw new \Exception('Inner date starts after outer date.');
+      }
+
+      // Dont test for inner end less than outer start because inner-start <
+      // outer-start throw first.
+      if ($innerEnd > $outerEnd) {
+        throw new \Exception('Inner date ends after outer date.');
+      }
     }
 
     return TRUE;

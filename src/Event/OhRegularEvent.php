@@ -81,7 +81,7 @@ class OhRegularEvent extends Event {
    *   If the regular hours is outside of the requested range.
    */
   public function addRegularHours(OhOccurrence $occurrence) {
-    if ($this->range->isWithin($occurrence)) {
+    if ($this->range->isWithin($occurrence, TRUE)) {
       $this->regularHours[] = $occurrence;
     }
     return $this;
