@@ -2,6 +2,7 @@
 
 namespace Drupal\oh_regular;
 
+use Drupal\Core\Datetime\DrupalDateTime;
 use Drupal\oh\Event\OhEvents;
 use Drupal\oh\Event\OhRegularEvent;
 use Drupal\oh\OhOccurrence;
@@ -47,14 +48,14 @@ class OhRegularSubscriber implements EventSubscriberInterface {
     foreach ($mapping as $fieldName) {
       foreach ($entity->{$fieldName} as $item) {
         /** @var \Drupal\date_recur\Plugin\Field\FieldType\DateRecurItem $item */
-
-        // Occurrences uses PHP date time.
-        // If you pass DrupalDateTime then it will never terminate because you
-        // cannot compare DrupalDateTime with DateTime.
-        $itemOccurrences = $item->getOccurrenceHandler()
-          ->getOccurrencesForDisplay($betweenStart, $betweenEnd);
+        $itemOccurrences = $item->getHelper()
+          ->generateOccurrences($betweenStart, $betweenEnd);
         foreach ($itemOccurrences as $itemOccurrence) {
-          $occurrence = (new OhOccurrence($itemOccurrence['value'], $itemOccurrence['end_value']))
+          $occurrence = new OhOccurrence(
+            DrupalDateTime::createFromDateTime($itemOccurrence->getStart()),
+            DrupalDateTime::createFromDateTime($itemOccurrence->getEnd())
+          );
+          $occurrence
             ->addCacheableDependency($entity)
             ->setIsOpen(TRUE);
           $event->addRegularHours($occurrence);

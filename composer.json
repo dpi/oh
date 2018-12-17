@@ -15,7 +15,7 @@
   },
   "require": {
     "php": "~7.1",
-    "drupal/date_recur": "*"
+    "drupal/date_recur": "^2"
   },
   "require-dev": {
     "drupal/coder": "^8.2.12",
