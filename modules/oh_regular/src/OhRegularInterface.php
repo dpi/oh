@@ -30,7 +30,23 @@ interface OhRegularInterface {
   public function getAllMapping(): array;
 
   /**
+   * Determine if a bundle opts into opening hours.
+   *
+   * @param string $entityTypeId
+   *   The entity type Id.
+   * @param string $bundle
+   *   The bundle.
+   *
+   * @return bool
+   *   Whether a bundle opts into opening hours.
+   */
+  public function hasMapping(string $entityTypeId, string $bundle): bool;
+
+  /**
    * Get field mapping for a bundle.
+   *
+   * Note that even if a bundle has no field mappings, it may still opt into
+   * opening hours. See ::hasMapping().
    *
    * @param string $entityTypeId
    *   The entity type Id.

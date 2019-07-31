@@ -53,8 +53,8 @@ class OhRegular implements OhRegularInterface {
    * {@inheritdoc}
    */
   public function hasOpeningHours(EntityInterface $entity): AccessResultInterface {
-    $mapping = $this->getMapping($entity->getEntityTypeId(), $entity->bundle());
-    $access = (AccessResult::allowedIf(!empty($mapping)))
+    $hasMapping = $this->hasMapping($entity->getEntityTypeId(), $entity->bundle());
+    $access = (AccessResult::allowedIf($hasMapping))
       ->addCacheTags([OhRegularMap::CACHE_TAG_ALL]);
     return $access;
   }
@@ -85,6 +85,14 @@ class OhRegular implements OhRegularInterface {
     }
 
     return $mapping;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function hasMapping(string $entityTypeId, string $bundle): bool {
+    $mapping = $this->getAllMapping();
+    return isset($mapping[$entityTypeId][$bundle]);
   }
 
   /**
