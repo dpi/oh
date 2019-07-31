@@ -48,6 +48,9 @@ class OhRegularSubscriber implements EventSubscriberInterface {
     foreach ($mapping as $fieldName) {
       foreach ($entity->{$fieldName} as $item) {
         /** @var \Drupal\date_recur\Plugin\Field\FieldType\DateRecurItem $item */
+        if ($item->isEmpty()) {
+          continue;
+        }
         $itemOccurrences = $item->getHelper()
           ->generateOccurrences($betweenStart, $betweenEnd);
         foreach ($itemOccurrences as $itemOccurrence) {
