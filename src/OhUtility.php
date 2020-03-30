@@ -21,12 +21,9 @@ class OhUtility {
    *
    * @return \Datetime
    *   A PHP datetime object.
-   *
-   * @deprecated remove when at least Drupal 8.6 is minimum supported version.
-   *   Use \Drupal\Core\Datetime\DrupalDateTime::getPhpDateTime() instead.
    */
   public static function toPhpDateTime(DrupalDateTime $drupalDateTime) {
-    return new \Datetime($drupalDateTime->format('r'), $drupalDateTime->getTimezone());
+    return new \DateTime($drupalDateTime->format('r'), $drupalDateTime->getTimezone());
   }
 
 }

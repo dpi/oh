@@ -2,10 +2,8 @@
 
 namespace Drupal\oh_review;
 
-use Drupal\Core\Datetime\DrupalDateTime;
 use Drupal\oh\OhDateRange;
 use Drupal\oh\OhOccurrence;
-use Drupal\oh\OhUtility;
 
 /**
  * Utility for OH Review.
@@ -34,8 +32,9 @@ class OhReviewUtility {
 
     if ($fillDays) {
       // Fill in the days.
-      $fillPointer = OhUtility::toPhpDateTime($range->getStart());
-      $fillEnd = OhUtility::toPhpDateTime($range->getEnd());
+      $fillPointer = $range->getStart()->getPhpDateTime();
+      $fillEnd = $range->getEnd()->getPhpDateTime();
+      $fillEnd->modify('-1 second');
       while ($fillPointer < $fillEnd) {
         $pointerDay = $fillPointer->format($dayFormat);
         if (!isset($occurrencesByDay[$pointerDay])) {
@@ -56,7 +55,7 @@ class OhReviewUtility {
 
     foreach ($occurrencesByDay as $dayCode => $occurrences) {
       if (!count($occurrences)) {
-        $day = DrupalDateTime::createFromFormat($dayFormat, $dayCode);
+        $day = \DateTime::createFromFormat($dayFormat, $dayCode);
         $week = $day->format($weekFormat);
         $groupedByWeek[$week][$dayCode] = $groupedByWeek[$week][$dayCode] ?? [];
       }

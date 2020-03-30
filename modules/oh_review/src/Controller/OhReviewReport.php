@@ -5,6 +5,8 @@ namespace Drupal\oh_review\Controller;
 use Drupal\Core\Cache\CacheableMetadata;
 use Drupal\Core\Controller\ControllerBase;
 use Drupal\Core\Datetime\DrupalDateTime;
+use Drupal\Core\Entity\EntityInterface;
+use Drupal\Core\Render\RendererInterface;
 use Drupal\oh\OhDateRange;
 use Drupal\oh\OhOpeningHoursInterface;
 use Drupal\oh_regular\OhRegularInterface;
@@ -15,6 +17,11 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
  * Creates a report of opening hours for relevant locations.
  */
 class OhReviewReport extends ControllerBase {
+
+  /**
+   * Tag to alter the displayed entities.
+   */
+  const QUERY_TAG_ENTITIES = 'oh_review_report_entities';
 
   /**
    * The opening hours service.
@@ -31,16 +38,26 @@ class OhReviewReport extends ControllerBase {
   protected $ohRegular;
 
   /**
+   * Renderer.
+   *
+   * @var \Drupal\Core\Render\RendererInterface
+   */
+  protected $renderer;
+
+  /**
    * Construct a new OhReviewReport.
    *
    * @param \Drupal\oh\OhOpeningHoursInterface $openingHours
    *   Opening hours service.
    * @param \Drupal\oh_regular\OhRegularInterface $ohRegular
    *   OH regular service.
+   * @param \Drupal\Core\Render\RendererInterface $renderer
+   *   Renderer.
    */
-  public function __construct(OhOpeningHoursInterface $openingHours, OhRegularInterface $ohRegular) {
+  public function __construct(OhOpeningHoursInterface $openingHours, OhRegularInterface $ohRegular, RendererInterface $renderer) {
     $this->openingHours = $openingHours;
     $this->ohRegular = $ohRegular;
+    $this->renderer = $renderer;
   }
 
   /**
@@ -49,7 +66,8 @@ class OhReviewReport extends ControllerBase {
   public static function create(ContainerInterface $container) {
     return new static(
       $container->get('oh.opening_hours'),
-      $container->get('oh_regular.mapping')
+      $container->get('oh_regular.mapping'),
+      $container->get('renderer')
     );
   }
 
@@ -85,49 +103,55 @@ class OhReviewReport extends ControllerBase {
     }
 
     $rows = [];
-    foreach ($this->loadEntities() as $entities) {
-      foreach ($entities as $entity) {
-        $cachability->addCacheableDependency($entity);
+    foreach ($this->loadEntities() as $entity) {
+      assert($entity instanceof EntityInterface);
 
-        $row = [];
-        $row['link'] = $entity->toLink();
+      $cachability->addCacheableDependency($entity);
 
-        // Use the same method as views' operations field plugin.
-        $operations = $this->entityTypeManager()
-          ->getListBuilder($entity->getEntityTypeId())
-          ->getOperations($entity);
-        $row['operations']['data'] = [
-          '#type' => 'operations',
-          '#links' => $operations,
-        ];
+      $row = [];
+      $row['link'] = $entity->toLink();
 
-        $occurrences = $this->openingHours->getOccurrences($entity, $range);
-        foreach ($occurrences as $occurrence) {
-          $cachability->addCacheableDependency($occurrence);
-        }
+      // Use the same method as views' operations field plugin.
+      $operations = $this->entityTypeManager()
+        ->getListBuilder($entity->getEntityTypeId())
+        ->getOperations($entity);
+      $row['operations']['data'] = [
+        '#type' => 'operations',
+        '#links' => $operations,
+      ];
 
-        $occurrencesByWeek = OhReviewUtility::occurrencesByWeek($range, $occurrences, TRUE);
-
-        $weekStart = clone $rangeStart;
-        foreach ($occurrencesByWeek as $weekCode => $days) {
-          $weekEnd = (clone $weekStart)->modify('+1 week');
-          $weekRange = new OhDateRange($weekStart, $weekEnd);
-
-          $occurrences = array_merge(...array_values($days));
-
-          $row[]['data'] = [
-            '#theme' => 'oh_review_report_list',
-            '#range' => $weekRange,
-            '#occurrences' => $occurrences,
-          ];
-          $weekStart->modify('+1 week');
-        }
-
-        $rows[] = $row;
+      $occurrences = $this->openingHours->getOccurrences($entity, $range);
+      foreach ($occurrences as $occurrence) {
+        $cachability->addCacheableDependency($occurrence);
       }
-      // Kill the reference so we clear memory properly.
-      unset($entities);
-      // @todo Clear out entity cache progressively.
+
+      $occurrencesByWeek = OhReviewUtility::occurrencesByWeek($range, $occurrences, TRUE);
+
+      $weekStart = clone $rangeStart;
+      foreach ($occurrencesByWeek as $weekCode => $days) {
+        $weekEnd = (clone $weekStart)->modify('+1 week');
+        $weekEnd->modify('-1 second');
+        $weekRange = new OhDateRange($weekStart, $weekEnd);
+
+        $occurrences = array_merge(...array_values($days));
+
+        $element = [
+          '#theme' => 'oh_review_report_list',
+          '#range' => $weekRange,
+          '#occurrences' => $occurrences,
+        ];
+        // Render now since keeping $occurrences around can eventually consume
+        // a lot of memory.
+        $row[]['data'] = $this->renderer->render($element);
+        $weekStart->modify('+1 week');
+      }
+
+      $rows[] = $row;
+
+      // GC everything since memory is precious for this report.
+      unset($entity);
+      unset($occurrences);
+      unset($elm);
     }
 
     $build['table'] = [
@@ -146,8 +170,8 @@ class OhReviewReport extends ControllerBase {
   /**
    * Loads entities progressively.
    *
-   * @return \Generator|\Drupal\Core\Entity\EntityInterface[][]
-   *   An array of entities.
+   * @return \Generator|\Drupal\Core\Entity\EntityInterface[]
+   *   Generates entities.
    */
   protected function loadEntities() {
     $allMapping = $this->ohRegular->getAllMapping();
@@ -171,8 +195,15 @@ class OhReviewReport extends ControllerBase {
         $query->condition($bundlesKey, $bundles, 'IN');
       }
 
+      $query->addTag(static::QUERY_TAG_ENTITIES);
+
       $entityIds = $query->execute();
-      yield $storage->loadMultiple($entityIds);
+      foreach (array_chunk($entityIds, 16) as $idChunk) {
+        foreach ($storage->loadMultiple($idChunk) as $entity) {
+          yield $entity;
+        }
+        $storage->resetCache($idChunk);
+      }
     }
 
     return NULL;
