@@ -110,6 +110,7 @@ function template_preprocess_oh_review_occurrences_list(array &$variables): void
       if (count($occurrences)) {
         foreach ($occurrences as $occurrence) {
           $dayInfo['times'][] = [
+            'attributes' => (new Attribute())->addClass($occurrence->isOpen() ? 'is-open' : 'is-closed'),
             'start' => $occurrence->getStart()->format($timeFormat),
             'end' => $occurrence->getEnd()->format($timeFormat),
             'is_open' => $occurrence->isOpen(),
@@ -123,6 +124,7 @@ function template_preprocess_oh_review_occurrences_list(array &$variables): void
         // No occurrences for this day.
         // This happens when fill days are inserted (mode: all).
         $dayInfo['times'][] = [
+          'attributes' => (new Attribute()),
           'is_open' => $open,
           'is_full_day' => TRUE,
           'message' => $variables['messages_no_occurrences'],

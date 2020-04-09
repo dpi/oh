@@ -64,14 +64,17 @@
   flex: 1;
 }
 
+.oh-review-occurrences-list .day .time.is-open,
 .oh-review-occurrences-list .day.day-is-open .time-message {
   border-color: #5f7;
 }
 
+.oh-review-occurrences-list .day .time.is-closed,
 .oh-review-occurrences-list .day.day-is-closed .time-message {
   border-color: #f75;
 }
 
+.oh-review-occurrences-list .day .time,
 .oh-review-occurrences-list .time-message {
   border: 2px solid #fe3;
   border-radius: 5px;

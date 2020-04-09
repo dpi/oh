@@ -16,14 +16,16 @@
             </div>
             <div class="day-times">
               {% for time in day.times %}
-                <div class="time">
-                  {% if not time.is_full_day  %}
-                    <div class="time-range">
+                <div {{ time.attributes.addClass('time') }}>
+                  <div class="time-range">
+                    {% if not time.is_full_day  %}
                       {{ time.start }}
                       {{ time_separator }}
                       {{ time.end }}
-                    </div>
-                  {% endif %}
+                    {% else %}
+                      {{ 'All day'|t }}
+                    {% endif %}
+                  </div>
                   {% if time.message %}
                     <div class="time-message">
                       {{ time.message }}
