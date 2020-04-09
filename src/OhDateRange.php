@@ -129,7 +129,7 @@ class OhDateRange {
   }
 
   /**
-   * Helper callback for usort() to sort date range objects by start time.
+   * Callback for \usort()/\uasort() to sort date range objects by start time.
    *
    * @param \Drupal\oh\OhDateRange $a
    *   A date range object.
@@ -140,7 +140,7 @@ class OhDateRange {
    *   Whether date range A is lower than date range B.
    */
   public static function sort(OhDateRange $a, OhDateRange $b): int {
-    return ($a->getStart() < $b->getStart()) ? -1 : 1;
+    return $a->getStart() <=> $b->getStart();
   }
 
   /**
