@@ -39,6 +39,15 @@ class OhOpeningHours implements OhOpeningHoursInterface {
    * {@inheritdoc}
    */
   public function getOccurrences(EntityInterface $entity, OhDateRange $range): array {
+    $occurrences = $this->getDimensionalOccurrences($entity, $range);
+    $occurrences = OhUtility::flattenOccurrences($occurrences);
+    return $occurrences;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function getDimensionalOccurrences(EntityInterface $entity, OhDateRange $range): array {
     $occurrences = $this->getRegularHours($entity, $range);
     $exceptions = $this->getExceptions($entity, $range);
 
