@@ -13,6 +13,16 @@ class OhOccurrence extends OhDateRange implements RefinableCacheableDependencyIn
   use RefinableCacheableDependencyTrait;
 
   /**
+   * Informs regular hours for the same day should be voided.
+   */
+  public const REGULAR_HOUR_INTERACTION_VOID_REGULAR = 0b1;
+
+  /**
+   * Informs this occurrence will not trigger regular hours to be voided.
+   */
+  public const REGULAR_HOUR_INTERACTION_NO_VOID_REGULAR = 0b0;
+
+  /**
    * Message to add to the occurrence.
    *
    * @var string[]
@@ -25,6 +35,13 @@ class OhOccurrence extends OhDateRange implements RefinableCacheableDependencyIn
    * @var bool
    */
   protected $open = FALSE;
+
+  /**
+   * Regular hours interaction behaviour.
+   *
+   * @var int
+   */
+  protected $regularHourInteraction = self::REGULAR_HOUR_INTERACTION_NO_VOID_REGULAR;
 
   /**
    * Add a message for the occurrence.
@@ -88,6 +105,32 @@ class OhOccurrence extends OhDateRange implements RefinableCacheableDependencyIn
     return $this->open;
   }
 
+  /**
+   * Sets interaction behaviour with regular hours.
+   *
+   * Note: it only takes one exception to trigger voiding.
+   *
+   * @param int $value
+   *   Interaction constant. See static::REGULAR_HOUR_INTERACTION_*.
+   *
+   * @return $this
+   *   Return object for chaining.
+   */
+  public function setRegularHourInteraction(int $value = self::REGULAR_HOUR_INTERACTION_NO_VOID_REGULAR) {
+    $this->regularHourInteraction = $value;
+    return $this;
+  }
+
+  /**
+   * Get interaction behaviour with regular hours.
+   *
+   * This method should only be used by exceptions, not regular hours.
+   *
+   * @return mixed
+   *   Interaction constant. See static::REGULAR_HOUR_INTERACTION_*.
+   */
+  public function getRegularHourInteraction(): int {
+    return $this->regularHourInteraction;
   }
 
   /**

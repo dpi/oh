@@ -54,6 +54,9 @@ class OhOpeningHours implements OhOpeningHoursInterface {
     if ($exceptions) {
       foreach ($exceptions as $exception) {
         $dayKey = $exception->getStart()->format(static::DAY_FORMAT);
+        if (!$exception->getRegularHourInteraction() & OhOccurrence::REGULAR_HOUR_INTERACTION_VOID_REGULAR) {
+          continue;
+        }
 
         // Remove any regular hour occurrences on the same day as exceptions.
         $occurrences = array_filter($occurrences, function (OhOccurrence $occurrence) use ($dayKey) {
