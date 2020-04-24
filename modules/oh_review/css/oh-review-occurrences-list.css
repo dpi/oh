@@ -64,18 +64,15 @@
   flex: 1;
 }
 
-.oh-review-occurrences-list .day .time.is-open,
-.oh-review-occurrences-list .day.day-is-open .time-message {
+.oh-review-occurrences-list .day .time.is-open {
   border-color: #5f7;
 }
 
-.oh-review-occurrences-list .day .time.is-closed,
-.oh-review-occurrences-list .day.day-is-closed .time-message {
+.oh-review-occurrences-list .day .time.is-closed {
   border-color: #f75;
 }
 
-.oh-review-occurrences-list .day .time,
-.oh-review-occurrences-list .time-message {
+.oh-review-occurrences-list .day .time {
   border: 2px solid #fe3;
   border-radius: 5px;
   padding: 2px;
