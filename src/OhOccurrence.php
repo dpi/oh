@@ -15,9 +15,9 @@ class OhOccurrence extends OhDateRange implements RefinableCacheableDependencyIn
   /**
    * Message to add to the occurrence.
    *
-   * @var string|null
+   * @var string[]
    */
-  protected $message;
+  protected $messages = [];
 
   /**
    * Whether this occurrence is open.
@@ -27,27 +27,41 @@ class OhOccurrence extends OhDateRange implements RefinableCacheableDependencyIn
   protected $open = FALSE;
 
   /**
-   * Set the message for the occurrence.
+   * Add a message for the occurrence.
    *
-   * @param string|null $message
-   *   The message for the occurrence, or NULL if no message.
+   * @param string $message
+   *   A message for the occurrence.
    *
    * @return $this
    *   Return object for chaining.
    */
-  public function setMessage(?string $message) {
-    $this->message = $message;
+  public function addMessage(string $message) {
+    $this->messages[] = $message;
     return $this;
   }
 
   /**
-   * Get the message for the occurrence.
+   * Set the messages for the occurrence.
    *
-   * @return string|null
-   *   The message for the occurrence, or NULL if no message.
+   * @param string[] $messages
+   *   The messages for the occurrence.
+   *
+   * @return $this
+   *   Return object for chaining.
    */
-  public function getMessage(): ?string {
-    return $this->message;
+  public function setMessages(array $messages) {
+    $this->messages = $messages;
+    return $this;
+  }
+
+  /**
+   * Get the messages for the occurrence.
+   *
+   * @return string[]
+   *   The messages for the occurrence.
+   */
+  public function getMessages(): array {
+    return $this->messages;
   }
 
   /**

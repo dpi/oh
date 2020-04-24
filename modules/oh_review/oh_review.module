@@ -115,7 +115,7 @@ function template_preprocess_oh_review_occurrences_list(array &$variables): void
             'end' => $occurrence->getEnd()->format($timeFormat),
             'is_open' => $occurrence->isOpen(),
             'is_full_day' => $isFullDay($occurrence->getStart(), $occurrence->getEnd()),
-            'message' => $occurrence->getMessage(),
+            'message' => implode(',', $occurrence->getMessages()),
           ];
           $open = ($open or $occurrence->isOpen());
         }

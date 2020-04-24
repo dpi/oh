@@ -18,26 +18,26 @@ class OhOccurrenceTest extends KernelTestBase {
   /**
    * Test message default value.
    *
-   * @covers ::getMessage
+   * @covers ::getMessages
    */
   public function testMessageDefault() {
     $occurrence = $this->createOccurrence();
-    $this->assertNull($occurrence->getMessage(), 'Default value is null');
+    $this->assertEquals([], $occurrence->getMessages());
   }
 
   /**
    * Test message setter.
    *
-   * @covers ::getMessage
+   * @covers ::getMessages
    */
   public function testMessageSetter() {
     $occurrence = $this->createOccurrence();
     $text = $this->randomMachineName();
-    $occurrence->setMessage($text);
-    $this->assertEquals($text, $occurrence->getMessage());
+    $occurrence->addMessage($text);
+    $this->assertEquals($text, implode(',', $occurrence->getMessages()));
 
-    $occurrence->setMessage(NULL);
-    $this->assertNull($occurrence->getMessage());
+    $occurrence->setMessages([]);
+    $this->assertEquals([], $occurrence->getMessages());
   }
 
   /**

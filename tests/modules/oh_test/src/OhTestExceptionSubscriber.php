@@ -45,7 +45,7 @@ class OhTestExceptionSubscriber implements EventSubscriberInterface {
           $end = (clone $start)->setTime(23, 59, 59);
 
           $occurrence = (new OhOccurrence($start, $end))
-            ->setMessage('Mondays are closed')
+            ->addMessage('Mondays are closed')
             ->setIsOpen(FALSE);
           $event->addException($occurrence);
         }
