@@ -110,7 +110,7 @@ class OhDateRangeTest extends KernelTestBase {
   }
 
   /**
-   * Tests isWithin utility
+   * Tests isWithin utility.
    *
    * @covers ::isWithin
    */

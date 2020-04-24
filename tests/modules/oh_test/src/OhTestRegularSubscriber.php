@@ -15,6 +15,8 @@ class OhTestRegularSubscriber implements EventSubscriberInterface {
 
   /**
    * Scenarios to run.
+   *
+   * @var string[]
    */
   protected $scenarios = [];
 

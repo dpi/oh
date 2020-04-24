@@ -15,6 +15,8 @@ class OhTestExceptionSubscriber implements EventSubscriberInterface {
 
   /**
    * Scenarios to run.
+   *
+   * @var string[]
    */
   protected $scenarios = [];
 
@@ -39,7 +41,7 @@ class OhTestExceptionSubscriber implements EventSubscriberInterface {
       $endDay = new DrupalDateTime('1 January 2016 00:00');
       $dayPointer = new DrupalDateTime('1 January 2015 00:00');
       while ($dayPointer < $endDay) {
-        // Monday = '1';
+        // e.g Monday == '1':
         if ($dayPointer->format('w') == 1) {
           $start = clone $dayPointer;
           $end = (clone $start)->setTime(23, 59, 59);
