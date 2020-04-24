@@ -88,4 +88,19 @@ class OhOccurrence extends OhDateRange implements RefinableCacheableDependencyIn
     return $this->open;
   }
 
+  }
+
+  /**
+   * Whether this occurrence at least a day long.
+   *
+   * @return bool
+   *   Whether this day is considered a full day or longer.
+   */
+  public function isFullDay(): bool {
+    $fullDay = new \DateInterval('PT' . ((60 * 60 * 24) - 60) . 'S');
+    $dayAfterStart = (clone $this->getStart()->getPhpDateTime())
+      ->add($fullDay);
+    return $this->getEnd()->getPhpDateTime() > $dayAfterStart;
+  }
+
 }
