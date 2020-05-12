@@ -95,7 +95,8 @@ class OhRegularMapForm extends EntityForm {
 
     $form = parent::buildForm($form, $form_state);
 
-    ['Content' => $contentEntityTypes] = $this->entityTypeRepository->getEntityTypeLabels(TRUE);
+    $contentLabel = (string) $this->t('Content', [], ['context' => 'Entity type group']);
+    [$contentLabel => $contentEntityTypes] = $this->entityTypeRepository->getEntityTypeLabels(TRUE);
     $bundleInfo = $this->entityTypeBundleInfo->getAllBundleInfo();
 
     // Compute intersection of content entities and bundle info.
