@@ -101,12 +101,14 @@ class OhUtility {
         if ($isStart) {
           $nextMarker = $markers[$k + 1];
           [$nextIsOpen, $nextDate] = $nextMarker;
+          assert($nextDate instanceof \DateTime && is_bool($nextIsOpen));
 
           // If the next marker is an opening, then remove it from iteration.
           if ($nextIsOpen) {
             unset($markers[$k + 1]);
           }
 
+          $nextDate->setTimezone($date->getTimezone());
           $newOccurrences[] = (new OhOccurrence(
             DrupalDateTime::createFromDateTime($date),
             DrupalDateTime::createFromDateTime($nextDate),
@@ -116,7 +118,9 @@ class OhUtility {
           // If this is an end marker, get the previous marker.
           $previousMarker = $markers[$k - 1];
           [, $previousDate] = $previousMarker;
+          assert($previousDate instanceof \DateTime);
 
+          $date->setTimezone($previousDate->getTimezone());
           $newOccurrences[] = (new OhOccurrence(
             DrupalDateTime::createFromDateTime($previousDate),
             DrupalDateTime::createFromDateTime($date),
@@ -131,7 +135,9 @@ class OhUtility {
         if ($isStart) {
           $nextMarker = $markers[$k + 1];
           [, $nextDate] = $nextMarker;
+          assert($nextDate instanceof \DateTime);
 
+          $nextDate->setTimezone($date->getTimezone());
           $newOccurrences[] = (new OhOccurrence(
             DrupalDateTime::createFromDateTime($date),
             DrupalDateTime::createFromDateTime($nextDate),

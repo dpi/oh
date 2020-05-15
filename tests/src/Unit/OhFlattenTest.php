@@ -250,6 +250,59 @@ class OhFlattenTest extends UnitTestCase {
   }
 
   /**
+   * Tests flattening when occurrences in different time zones are provided.
+   *
+   * Exception should not be thrown when different time zones are provided.
+   *
+   * @param \Drupal\oh\OhOccurrence[] $occurrences
+   *   A series of occurrences to flatten.
+   *
+   * @covers ::flattenOccurrences
+   */
+  public function testFlatteningDifferentTimeZones(): void {
+    // Cant create an occurrence with different time zones because the object
+    // prevents it. Instead create a scenario where there is overlap and markers
+    // intersect.
+    $occurrences = [
+      (new OhOccurrence(
+        // Sydney: GMT+10.
+        new DrupalDateTime('1 oct 2019 9:00:00am', new \DateTimeZone('Australia/Sydney')),
+        new DrupalDateTime('1 oct 2019 5:00:00pm', new \DateTimeZone('Australia/Sydney')),
+      ))->setIsOpen(TRUE),
+      (new OhOccurrence(
+        // Singapore: GMT+8.
+        // 11am Sydney time.
+        new DrupalDateTime('1 oct 2019 9:00:00am', new \DateTimeZone('Asia/Singapore')),
+        new DrupalDateTime('1 oct 2019 5:00:00pm', new \DateTimeZone('Asia/Singapore')),
+      ))->setIsOpen(TRUE),
+      (new OhOccurrence(
+        // Cairo: UTC+2.
+        // 11:30am Sydney time.
+        new DrupalDateTime('1 oct 2019 3:30:00am', new \DateTimeZone('Africa/Cairo')),
+        new DrupalDateTime('1 oct 2019 3:45:00am', new \DateTimeZone('Africa/Cairo')),
+      ))->setIsOpen(FALSE),
+    ];
+
+    $result = OhUtility::flattenOccurrences($occurrences);
+    $this->assertCount(3, $result);
+
+    $this->assertEquals('Tue, 01 Oct 2019 09:00:00 +1000', $result[0]->getStart()->format('r'));
+    $this->assertEquals('Australia/Sydney', $result[0]->getStart()->getTimezone()->getName());
+    $this->assertEquals('Tue, 01 Oct 2019 11:30:00 +1000', $result[0]->getEnd()->format('r'));
+    $this->assertEquals('Australia/Sydney', $result[0]->getEnd()->getTimezone()->getName());
+
+    $this->assertEquals('Tue, 01 Oct 2019 11:30:00 +1000', $result[1]->getStart()->format('r'));
+    $this->assertEquals('Australia/Sydney', $result[1]->getStart()->getTimezone()->getName());
+    $this->assertEquals('Tue, 01 Oct 2019 11:45:00 +1000', $result[1]->getEnd()->format('r'));
+    $this->assertEquals('Australia/Sydney', $result[1]->getEnd()->getTimezone()->getName());
+
+    $this->assertEquals('Tue, 01 Oct 2019 11:45:00 +1000', $result[2]->getStart()->format('r'));
+    $this->assertEquals('Australia/Sydney', $result[2]->getStart()->getTimezone()->getName());
+    $this->assertEquals('Tue, 01 Oct 2019 19:00:00 +1000', $result[2]->getEnd()->format('r'));
+    $this->assertEquals('Australia/Sydney', $result[2]->getEnd()->getTimezone()->getName());
+  }
+
+  /**
    * Compares two arrays of occurrences.
    *
    * @param \Drupal\oh\OhOccurrence[] $expected
