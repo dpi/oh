@@ -71,8 +71,7 @@ class OhUtility {
 
     // Remove opening markers between closure start + end markers.
     $betweenClosed = FALSE;
-    foreach ($markers as $k => $marker) {
-      [$isOpen, $date, $isStart] = $marker;
+    foreach ($markers as $k => [$isOpen, $date, $isStart]) {
       assert($date instanceof \DateTime && is_bool($isOpen) && is_bool($isStart));
       if (!$isOpen) {
         $betweenClosed = $isStart;
@@ -162,8 +161,7 @@ class OhUtility {
   protected static function combineIntersecting(array $markers, bool $openings): array {
     $depth = 0;
     $inMarkerKey = NULL;
-    foreach ($markers as $k => $marker) {
-      [$isOpen, $date, $isStart] = $marker;
+    foreach ($markers as $k => [$isOpen, $date, $isStart]) {
       assert($date instanceof \DateTime && is_bool($isOpen) && is_bool($isStart));
       if ($isOpen !== $openings) {
         continue;
