@@ -1,10 +1,11 @@
 <?php
 
+declare(strict_types = 1);
+
 namespace Drupal\oh_review\Controller;
 
 use Drupal\Core\Cache\CacheableMetadata;
 use Drupal\Core\Controller\ControllerBase;
-use Drupal\Core\Datetime\DrupalDateTime;
 use Drupal\Core\Entity\EntityInterface;
 use Drupal\Core\Render\RendererInterface;
 use Drupal\oh\OhDateRange;
@@ -212,10 +213,10 @@ class OhReviewReport extends ControllerBase {
   /**
    * Get the range start date.
    *
-   * @return \Drupal\Core\Datetime\DrupalDateTime
+   * @return \DateTime
    *   The range start date.
    */
-  protected function getRangeStart(): DrupalDateTime {
+  protected function getRangeStart(): \DateTime {
     $dayMap = [
       'Sunday',
       'Monday',
@@ -231,9 +232,9 @@ class OhReviewReport extends ControllerBase {
       ->get('first_day');
     $firstDayStr = $dayMap[$firstDayInt];
     // Today day int.
-    $today = (new DrupalDateTime())->format('w');
+    $today = (new \DateTime())->format('w');
     $weekStartString = ($today == $firstDayInt ? '' : 'last ') . $firstDayStr . ' 00:00';
-    return new DrupalDateTime($weekStartString);
+    return new \DateTime($weekStartString);
   }
 
 }

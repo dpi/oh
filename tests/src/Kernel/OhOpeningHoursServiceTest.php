@@ -1,8 +1,9 @@
 <?php
 
+declare(strict_types = 1);
+
 namespace Drupal\Tests\oh\Kernel;
 
-use Drupal\Core\Datetime\DrupalDateTime;
 use Drupal\entity_test\Entity\EntityTest;
 use Drupal\KernelTests\KernelTestBase;
 use Drupal\oh\OhDateRange;
@@ -31,8 +32,8 @@ class OhOpeningHoursServiceTest extends KernelTestBase {
     ]);
     $this->setRegularScenarios(['every_day_2015']);
 
-    $start = new DrupalDateTime('1 Jan 2016 00:00');
-    $end = new DrupalDateTime('31 Dec 2016 00:00');
+    $start = new \DateTime('1 Jan 2016 00:00');
+    $end = new \DateTime('31 Dec 2016 00:00');
     $range = new OhDateRange($start, $end);
 
     $this->setExpectedException(\Exception::class, 'Inner date starts before outer date.');
@@ -48,8 +49,8 @@ class OhOpeningHoursServiceTest extends KernelTestBase {
     ]);
     $this->setRegularScenarios(['every_day_2015']);
 
-    $start = new DrupalDateTime('1 Jan 2015 00:00');
-    $end = new DrupalDateTime('1 Jan 2016 00:00');
+    $start = new \DateTime('1 Jan 2015 00:00');
+    $end = new \DateTime('1 Jan 2016 00:00');
     $range = new OhDateRange($start, $end);
 
     $occurrences = $this->openingHoursService()->getOccurrences($entity, $range);
@@ -75,8 +76,8 @@ class OhOpeningHoursServiceTest extends KernelTestBase {
     $this->setRegularScenarios(['every_day_2015']);
     $this->setExceptionScenarios(['mondays_2015']);
 
-    $start = new DrupalDateTime('1 Jan 2015 00:00');
-    $end = new DrupalDateTime('1 Jan 2016 00:00');
+    $start = new \DateTime('1 Jan 2015 00:00');
+    $end = new \DateTime('1 Jan 2016 00:00');
     $range = new OhDateRange($start, $end);
 
     $occurrences = $this->openingHoursService()->getOccurrences($entity, $range);
@@ -88,7 +89,7 @@ class OhOpeningHoursServiceTest extends KernelTestBase {
     // 1 March 2015 is a Sunday.
     $this->assertEquals('09:00:00', $days['2015-03-01'][0]->getStart()->format($timeFormat));
     $this->assertEquals('00:00:00', $days['2015-03-02'][0]->getStart()->format($timeFormat));
-    $this->assertEquals('Mondays are closed', $days['2015-03-02'][0]->getMessage());
+    $this->assertEquals('Mondays are closed', $days['2015-03-02'][0]->getMessages()[0]);
   }
 
   /**
@@ -103,8 +104,8 @@ class OhOpeningHoursServiceTest extends KernelTestBase {
     $this->setRegularScenarios(['every_day_2015']);
     $this->setExceptionScenarios(['mondays_2015']);
 
-    $start = new DrupalDateTime('1 Jan 2015 00:00');
-    $end = new DrupalDateTime('1 Jan 2016 00:00');
+    $start = new \DateTime('1 Jan 2015 00:00');
+    $end = new \DateTime('1 Jan 2016 00:00');
     $range = new OhDateRange($start, $end);
 
     $occurrences = $this->openingHoursService()->getRegularHours($entity, $range);
@@ -123,8 +124,8 @@ class OhOpeningHoursServiceTest extends KernelTestBase {
     $this->setRegularScenarios(['every_day_2015']);
     $this->setExceptionScenarios(['mondays_2015']);
 
-    $start = new DrupalDateTime('1 Jan 2015 00:00');
-    $end = new DrupalDateTime('1 Jan 2016 00:00');
+    $start = new \DateTime('1 Jan 2015 00:00');
+    $end = new \DateTime('1 Jan 2016 00:00');
     $range = new OhDateRange($start, $end);
 
     $occurrences = $this->openingHoursService()->getExceptions($entity, $range);

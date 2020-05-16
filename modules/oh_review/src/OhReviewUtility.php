@@ -32,8 +32,8 @@ class OhReviewUtility {
 
     if ($fillDays) {
       // Fill in the days.
-      $fillPointer = $range->getStart()->getPhpDateTime();
-      $fillEnd = $range->getEnd()->getPhpDateTime();
+      $fillPointer = $range->getStart();
+      $fillEnd = $range->getEnd();
       $fillEnd->modify('-1 second');
       while ($fillPointer < $fillEnd) {
         $pointerDay = $fillPointer->format($dayFormat);

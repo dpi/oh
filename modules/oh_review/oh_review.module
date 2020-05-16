@@ -5,10 +5,8 @@
  * Hooks for OH Review module.
  */
 
-use Drupal\Core\Datetime\DrupalDateTime;
 use Drupal\Core\Template\Attribute;
 use Drupal\oh\OhOccurrence;
-use Drupal\oh\OhUtility;
 use Drupal\oh_review\Form\OhReviewSidebarForm;
 use Drupal\oh_review\OhReviewUtility;
 
@@ -50,10 +48,9 @@ function oh_review_theme(array $existing, string $type, string $theme, string $p
 function template_preprocess_oh_review_occurrences_list(array &$variables): void {
   $variables['#attached']['library'][] = 'oh_review/occurrences_list';
 
-  $isFullDay = function (DrupalDateTime $start, DrupalDateTime $end): bool {
+  $isFullDay = function (\DateTimeInterface $start, \DateTimeInterface $end): bool {
     $fullDay = new \DateInterval('PT' . ((60 * 60 * 24) - 60) . 'S');
-    $startPlusFullDay = OhUtility::toPhpDateTime($start)->add($fullDay);
-    $end = OhUtility::toPhpDateTime($end);
+    $startPlusFullDay = $start->add($fullDay);
     return $end >= $startPlusFullDay;
   };
 
@@ -96,7 +93,7 @@ function template_preprocess_oh_review_occurrences_list(array &$variables): void
       $week['attributes']->addClass('this-week');
     }
     foreach ($days as $dayCode => $occurrences) {
-      $day = DrupalDateTime::createFromFormat($dayFormat, $dayCode);
+      $day = \DateTime::createFromFormat($dayFormat, $dayCode);
       $dayInfo = [
         'times' => [],
         'day' => $day->format($dayStringFormat),
@@ -172,7 +169,7 @@ function template_preprocess_oh_review_report_list(array &$variables): void {
       'attributes' => new Attribute(),
     ];
     foreach ($days as $dayCode => $occurrences) {
-      $day = DrupalDateTime::createFromFormat($dayFormat, $dayCode);
+      $day = \DateTime::createFromFormat($dayFormat, $dayCode);
       $dayInfo = [
         'attributes' => new Attribute(),
         'openings' => 0,

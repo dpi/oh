@@ -2,7 +2,6 @@
 
 namespace Drupal\oh_test;
 
-use Drupal\Core\Datetime\DrupalDateTime;
 use Drupal\oh\Event\OhEvents;
 use Drupal\oh\Event\OhRegularEvent;
 use Drupal\oh\OhOccurrence;
@@ -38,8 +37,8 @@ class OhTestRegularSubscriber implements EventSubscriberInterface {
    */
   public function regularHours(OhRegularEvent $event): void {
     if (in_array('every_day_2015', $this->scenarios)) {
-      $endDay = new DrupalDateTime('1 January 2016 00:00');
-      $dayPointer = new DrupalDateTime('1 January 2015 9am');
+      $endDay = new \DateTime('1 January 2016 00:00');
+      $dayPointer = new \DateTime('1 January 2015 9am');
       while ($dayPointer < $endDay) {
         $start = clone $dayPointer;
         $end = (clone $start)->modify('+8 hours');

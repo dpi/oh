@@ -141,9 +141,9 @@ class OhOccurrence extends OhDateRange implements RefinableCacheableDependencyIn
    */
   public function isFullDay(): bool {
     $fullDay = new \DateInterval('PT' . ((60 * 60 * 24) - 60) . 'S');
-    $dayAfterStart = (clone $this->getStart()->getPhpDateTime())
+    $dayAfterStart = (clone $this->getStart())
       ->add($fullDay);
-    return $this->getEnd()->getPhpDateTime() > $dayAfterStart;
+    return $this->getEnd() > $dayAfterStart;
   }
 
 }

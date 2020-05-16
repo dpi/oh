@@ -2,11 +2,9 @@
 
 namespace Drupal\oh_regular;
 
-use Drupal\Core\Datetime\DrupalDateTime;
 use Drupal\oh\Event\OhEvents;
 use Drupal\oh\Event\OhRegularEvent;
 use Drupal\oh\OhOccurrence;
-use Drupal\oh\OhUtility;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
 /**
@@ -42,8 +40,8 @@ class OhRegularSubscriber implements EventSubscriberInterface {
     $mapping = $this->ohRegular->getMapping($entity->getEntityTypeId(), $entity->bundle());
 
     $range = $event->getRange();
-    $betweenStart = OhUtility::toPhpDateTime($range->getStart());
-    $betweenEnd = OhUtility::toPhpDateTime($range->getEnd());
+    $betweenStart = $range->getStart();
+    $betweenEnd = $range->getEnd();
 
     foreach ($mapping as $fieldName) {
       foreach ($entity->{$fieldName} as $item) {
@@ -55,8 +53,8 @@ class OhRegularSubscriber implements EventSubscriberInterface {
           ->generateOccurrences($betweenStart, $betweenEnd);
         foreach ($itemOccurrences as $itemOccurrence) {
           $occurrence = new OhOccurrence(
-            DrupalDateTime::createFromDateTime($itemOccurrence->getStart()),
-            DrupalDateTime::createFromDateTime($itemOccurrence->getEnd())
+            $itemOccurrence->getStart(),
+            $itemOccurrence->getEnd()
           );
           $occurrence
             ->addCacheableDependency($entity)

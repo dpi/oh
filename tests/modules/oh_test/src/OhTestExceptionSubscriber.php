@@ -2,7 +2,6 @@
 
 namespace Drupal\oh_test;
 
-use Drupal\Core\Datetime\DrupalDateTime;
 use Drupal\oh\Event\OhEvents;
 use Drupal\oh\Event\OhExceptionEvent;
 use Drupal\oh\OhOccurrence;
@@ -38,8 +37,8 @@ class OhTestExceptionSubscriber implements EventSubscriberInterface {
    */
   public function exceptions(OhExceptionEvent $event): void {
     if (in_array('mondays_2015', $this->scenarios)) {
-      $endDay = new DrupalDateTime('1 January 2016 00:00');
-      $dayPointer = new DrupalDateTime('1 January 2015 00:00');
+      $endDay = new \DateTime('1 January 2016 00:00');
+      $dayPointer = new \DateTime('1 January 2015 00:00');
       while ($dayPointer < $endDay) {
         // e.g Monday == '1':
         if ($dayPointer->format('w') == 1) {

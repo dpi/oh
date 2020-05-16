@@ -1,30 +1,13 @@
 <?php
 
-namespace Drupal\oh;
+declare(strict_types = 1);
 
-use Drupal\Core\Datetime\DrupalDateTime;
+namespace Drupal\oh;
 
 /**
  * Provide standalone utilities assisting opening hours.
  */
 class OhUtility {
-
-  /**
-   * Downgrades a DrupalDateTime object to PHP date time.
-   *
-   * Useful in situations where object comparison is used.
-   *
-   * @param \Drupal\Core\Datetime\DrupalDateTime $drupalDateTime
-   *   A Drupal datetime object.
-   *
-   * @see https://www.drupal.org/node/2936388
-   *
-   * @return \Datetime
-   *   A PHP datetime object.
-   */
-  public static function toPhpDateTime(DrupalDateTime $drupalDateTime) {
-    return new \DateTime($drupalDateTime->format('r'), $drupalDateTime->getTimezone());
-  }
 
   /**
    * Flattens occurrences so they do not overlap.
@@ -47,13 +30,13 @@ class OhUtility {
     foreach ($occurrences as $occurrence) {
       $markers[] = [
         $occurrence->isOpen(),
-        $occurrence->getStart()->getPhpDateTime(),
+        $occurrence->getStart(),
         TRUE,
         $occurrence->getMessages(),
       ];
       $markers[] = [
         $occurrence->isOpen(),
-        $occurrence->getEnd()->getPhpDateTime(),
+        $occurrence->getEnd(),
         FALSE,
         $occurrence->getMessages(),
       ];
@@ -109,8 +92,8 @@ class OhUtility {
 
           $nextDate->setTimezone($date->getTimezone());
           $newOccurrences[] = (new OhOccurrence(
-            DrupalDateTime::createFromDateTime($date),
-            DrupalDateTime::createFromDateTime($nextDate),
+            $date,
+            $nextDate,
           ))->setIsOpen(TRUE)->setMessages($marker[3]);
         }
         else {
@@ -121,8 +104,8 @@ class OhUtility {
 
           $date->setTimezone($previousDate->getTimezone());
           $newOccurrences[] = (new OhOccurrence(
-            DrupalDateTime::createFromDateTime($previousDate),
-            DrupalDateTime::createFromDateTime($date),
+            $previousDate,
+            $date,
           ))->setIsOpen(TRUE)->setMessages($marker[3]);
         }
       }
@@ -138,8 +121,8 @@ class OhUtility {
 
           $nextDate->setTimezone($date->getTimezone());
           $newOccurrences[] = (new OhOccurrence(
-            DrupalDateTime::createFromDateTime($date),
-            DrupalDateTime::createFromDateTime($nextDate),
+            $date,
+            $nextDate,
           ))->setIsOpen(FALSE)->setMessages($marker[3]);
         }
       }

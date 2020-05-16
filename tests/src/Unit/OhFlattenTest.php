@@ -4,10 +4,6 @@ declare(strict_types = 1);
 
 namespace Drupal\Tests\oh\Unit;
 
-use Drupal\Core\Datetime\DrupalDateTime;
-use Drupal\Core\DependencyInjection\ContainerBuilder;
-use Drupal\Core\Language\Language;
-use Drupal\Core\Language\LanguageManagerInterface;
 use Drupal\oh\OhDateRange;
 use Drupal\oh\OhOccurrence;
 use Drupal\oh\OhUtility;
@@ -22,30 +18,6 @@ use Drupal\Tests\UnitTestCase;
  * @group date_recur
  */
 class OhFlattenTest extends UnitTestCase {
-
-  /**
-   * {@inheritdoc}
-   */
-  protected function setUp() {
-    parent::setUp();
-    $this->setupDrupalDateTime();
-  }
-
-  /**
-   * Prepares Drupal container so DrupalDateTime class can be used.
-   */
-  protected function setupDrupalDateTime() {
-    // DrupalDateTime wants to access the language manager.
-    $languageManager = $this->getMockForAbstractClass(LanguageManagerInterface::class);
-    $languageManager->expects($this->any())
-      ->method('getCurrentLanguage')
-      ->will($this->returnValue(new Language(['id' => 'en'])));
-
-    $container = new ContainerBuilder();
-    $container->set('language_manager', $languageManager);
-    $container->set('string_translation', $this->getStringTranslationStub());
-    \Drupal::setContainer($container);
-  }
 
   /**
    * Tests occurrences are flattened.
@@ -70,20 +42,19 @@ class OhFlattenTest extends UnitTestCase {
    *   Data for testing.
    */
   public function providerCompute() {
-    $this->setupDrupalDateTime();
     $data = [];
 
     $data['simple opening'] = [
       [
         (new OhOccurrence(
-          new DrupalDateTime('1 oct 2019 9:00:00am'),
-          new DrupalDateTime('1 oct 2019 5:00:00pm'),
+          new \DateTime('1 oct 2019 9:00:00am'),
+          new \DateTime('1 oct 2019 5:00:00pm'),
         ))->setIsOpen(TRUE)->setMessages(['abc']),
       ],
       [
         (new OhOccurrence(
-          new DrupalDateTime('1 oct 2019 9:00:00am'),
-          new DrupalDateTime('1 oct 2019 5:00:00pm'),
+          new \DateTime('1 oct 2019 9:00:00am'),
+          new \DateTime('1 oct 2019 5:00:00pm'),
         ))->setIsOpen(TRUE)->setMessages(['abc']),
       ],
     ];
@@ -91,14 +62,14 @@ class OhFlattenTest extends UnitTestCase {
     $data['simple closure'] = [
       [
         (new OhOccurrence(
-          new DrupalDateTime('1 oct 2019 9:00:00am'),
-          new DrupalDateTime('1 oct 2019 5:00:00pm'),
+          new \DateTime('1 oct 2019 9:00:00am'),
+          new \DateTime('1 oct 2019 5:00:00pm'),
         ))->setIsOpen(FALSE)->setMessages(['abc']),
       ],
       [
         (new OhOccurrence(
-          new DrupalDateTime('1 oct 2019 9:00:00am'),
-          new DrupalDateTime('1 oct 2019 5:00:00pm'),
+          new \DateTime('1 oct 2019 9:00:00am'),
+          new \DateTime('1 oct 2019 5:00:00pm'),
         ))->setIsOpen(FALSE)->setMessages(['abc']),
       ],
     ];
@@ -107,18 +78,18 @@ class OhFlattenTest extends UnitTestCase {
       [
         // Opening should be erased entirely.
         (new OhOccurrence(
-          new DrupalDateTime('1 oct 2019 9:00:00am'),
-          new DrupalDateTime('1 oct 2019 5:00:00pm'),
+          new \DateTime('1 oct 2019 9:00:00am'),
+          new \DateTime('1 oct 2019 5:00:00pm'),
         ))->setIsOpen(TRUE)->setMessages(['abc']),
         (new OhOccurrence(
-          new DrupalDateTime('1 oct 2019 8:00:00am'),
-          new DrupalDateTime('1 oct 2019 6:00:00pm'),
+          new \DateTime('1 oct 2019 8:00:00am'),
+          new \DateTime('1 oct 2019 6:00:00pm'),
         ))->setIsOpen(FALSE)->setMessages(['xyz']),
       ],
       [
         (new OhOccurrence(
-          new DrupalDateTime('1 oct 2019 8:00:00am'),
-          new DrupalDateTime('1 oct 2019 6:00:00pm'),
+          new \DateTime('1 oct 2019 8:00:00am'),
+          new \DateTime('1 oct 2019 6:00:00pm'),
         ))->setIsOpen(FALSE)->setMessages(['xyz']),
       ],
     ];
@@ -126,22 +97,22 @@ class OhFlattenTest extends UnitTestCase {
     $data['individual openings'] = [
       [
         (new OhOccurrence(
-          new DrupalDateTime('1 oct 2019 9:00:00am'),
-          new DrupalDateTime('1 oct 2019 1:00:00pm'),
+          new \DateTime('1 oct 2019 9:00:00am'),
+          new \DateTime('1 oct 2019 1:00:00pm'),
         ))->setIsOpen(TRUE)->setMessages(['abc']),
         (new OhOccurrence(
-          new DrupalDateTime('1 oct 2019 2:30:00pm'),
-          new DrupalDateTime('1 oct 2019 4:00:00pm'),
+          new \DateTime('1 oct 2019 2:30:00pm'),
+          new \DateTime('1 oct 2019 4:00:00pm'),
         ))->setIsOpen(TRUE)->setMessages(['xyz']),
       ],
       [
         (new OhOccurrence(
-          new DrupalDateTime('1 oct 2019 9:00:00am'),
-          new DrupalDateTime('1 oct 2019 1:00:00pm'),
+          new \DateTime('1 oct 2019 9:00:00am'),
+          new \DateTime('1 oct 2019 1:00:00pm'),
         ))->setIsOpen(TRUE)->setMessages(['abc']),
         (new OhOccurrence(
-          new DrupalDateTime('1 oct 2019 2:30:00pm'),
-          new DrupalDateTime('1 oct 2019 4:00:00pm'),
+          new \DateTime('1 oct 2019 2:30:00pm'),
+          new \DateTime('1 oct 2019 4:00:00pm'),
         ))->setIsOpen(TRUE)->setMessages(['xyz']),
       ],
     ];
@@ -149,18 +120,18 @@ class OhFlattenTest extends UnitTestCase {
     $data['intersecting openings'] = [
       [
         (new OhOccurrence(
-          new DrupalDateTime('1 oct 2019 9:00:00am'),
-          new DrupalDateTime('1 oct 2019 1:00:00pm'),
+          new \DateTime('1 oct 2019 9:00:00am'),
+          new \DateTime('1 oct 2019 1:00:00pm'),
         ))->setIsOpen(TRUE)->setMessages(['abc']),
         (new OhOccurrence(
-          new DrupalDateTime('1 oct 2019 10:30:00am'),
-          new DrupalDateTime('1 oct 2019 4:00:00pm'),
+          new \DateTime('1 oct 2019 10:30:00am'),
+          new \DateTime('1 oct 2019 4:00:00pm'),
         ))->setIsOpen(TRUE)->setMessages(['xyz']),
       ],
       [
         (new OhOccurrence(
-          new DrupalDateTime('1 oct 2019 9:00:00am'),
-          new DrupalDateTime('1 oct 2019 4:00:00pm'),
+          new \DateTime('1 oct 2019 9:00:00am'),
+          new \DateTime('1 oct 2019 4:00:00pm'),
         ))->setIsOpen(TRUE)->setMessages(['abc', 'xyz']),
       ],
     ];
@@ -168,26 +139,26 @@ class OhFlattenTest extends UnitTestCase {
     $data['open end intersect closure / closure intersect closure'] = [
       [
         (new OhOccurrence(
-          new DrupalDateTime('1 oct 2019 9:00:00am'),
-          new DrupalDateTime('1 oct 2019 1:00:00pm'),
+          new \DateTime('1 oct 2019 9:00:00am'),
+          new \DateTime('1 oct 2019 1:00:00pm'),
         ))->setIsOpen(TRUE)->setMessages(['abc']),
         (new OhOccurrence(
-          new DrupalDateTime('1 oct 2019 10:30:00am'),
-          new DrupalDateTime('1 oct 2019 4:00:00pm'),
+          new \DateTime('1 oct 2019 10:30:00am'),
+          new \DateTime('1 oct 2019 4:00:00pm'),
         ))->setIsOpen(FALSE)->setMessages(['def']),
         (new OhOccurrence(
-          new DrupalDateTime('1 oct 2019 12:00:00pm'),
-          new DrupalDateTime('1 oct 2019 5:00:00pm'),
+          new \DateTime('1 oct 2019 12:00:00pm'),
+          new \DateTime('1 oct 2019 5:00:00pm'),
         ))->setIsOpen(FALSE)->setMessages(['xyz']),
       ],
       [
         (new OhOccurrence(
-          new DrupalDateTime('1 oct 2019 9:00:00am'),
-          new DrupalDateTime('1 oct 2019 10:30:00am'),
+          new \DateTime('1 oct 2019 9:00:00am'),
+          new \DateTime('1 oct 2019 10:30:00am'),
         ))->setIsOpen(TRUE)->setMessages(['abc']),
         (new OhOccurrence(
-          new DrupalDateTime('1 oct 2019 10:30:00am'),
-          new DrupalDateTime('1 oct 2019 5:00:00pm'),
+          new \DateTime('1 oct 2019 10:30:00am'),
+          new \DateTime('1 oct 2019 5:00:00pm'),
         ))->setIsOpen(FALSE)->setMessages(['def', 'xyz']),
       ],
     ];
@@ -195,26 +166,26 @@ class OhFlattenTest extends UnitTestCase {
     $data['open start intersect closure / closure intersect closure'] = [
       [
         (new OhOccurrence(
-          new DrupalDateTime('1 oct 2019 9:30:00am'),
-          new DrupalDateTime('1 oct 2019 4:00:00pm'),
+          new \DateTime('1 oct 2019 9:30:00am'),
+          new \DateTime('1 oct 2019 4:00:00pm'),
         ))->setIsOpen(FALSE)->setMessages(['abc']),
         (new OhOccurrence(
-          new DrupalDateTime('1 oct 2019 12:00:00pm'),
-          new DrupalDateTime('1 oct 2019 5:00:00pm'),
+          new \DateTime('1 oct 2019 12:00:00pm'),
+          new \DateTime('1 oct 2019 5:00:00pm'),
         ))->setIsOpen(FALSE)->setMessages(['def']),
         (new OhOccurrence(
-          new DrupalDateTime('1 oct 2019 1:00:00pm'),
-          new DrupalDateTime('1 oct 2019 7:00:00pm'),
+          new \DateTime('1 oct 2019 1:00:00pm'),
+          new \DateTime('1 oct 2019 7:00:00pm'),
         ))->setIsOpen(TRUE)->setMessages(['xyz']),
       ],
       [
         (new OhOccurrence(
-          new DrupalDateTime('1 oct 2019 9:30:00am'),
-          new DrupalDateTime('1 oct 2019 5:00:00pm'),
+          new \DateTime('1 oct 2019 9:30:00am'),
+          new \DateTime('1 oct 2019 5:00:00pm'),
         ))->setIsOpen(FALSE)->setMessages(['abc', 'def']),
         (new OhOccurrence(
-          new DrupalDateTime('1 oct 2019 5:00:00pm'),
-          new DrupalDateTime('1 oct 2019 7:00:00pm'),
+          new \DateTime('1 oct 2019 5:00:00pm'),
+          new \DateTime('1 oct 2019 7:00:00pm'),
         ))->setIsOpen(TRUE)->setMessages(['xyz']),
       ],
     ];
@@ -222,26 +193,26 @@ class OhFlattenTest extends UnitTestCase {
     $data['closure over opening'] = [
       [
         (new OhOccurrence(
-          new DrupalDateTime('1 oct 2019 9:00:00am'),
-          new DrupalDateTime('1 oct 2019 5:00:00pm'),
+          new \DateTime('1 oct 2019 9:00:00am'),
+          new \DateTime('1 oct 2019 5:00:00pm'),
         ))->setIsOpen(TRUE)->setMessages(['abc']),
         (new OhOccurrence(
-          new DrupalDateTime('1 oct 2019 1:00:00pm'),
-          new DrupalDateTime('1 oct 2019 1:30:00pm'),
+          new \DateTime('1 oct 2019 1:00:00pm'),
+          new \DateTime('1 oct 2019 1:30:00pm'),
         ))->setIsOpen(FALSE)->setMessages(['xyz']),
       ],
       [
         (new OhOccurrence(
-          new DrupalDateTime('1 oct 2019 9:00:00am'),
-          new DrupalDateTime('1 oct 2019 1:00:00pm'),
+          new \DateTime('1 oct 2019 9:00:00am'),
+          new \DateTime('1 oct 2019 1:00:00pm'),
         ))->setIsOpen(TRUE)->setMessages(['abc']),
         (new OhOccurrence(
-          new DrupalDateTime('1 oct 2019 1:00:00pm'),
-          new DrupalDateTime('1 oct 2019 1:30:00pm'),
+          new \DateTime('1 oct 2019 1:00:00pm'),
+          new \DateTime('1 oct 2019 1:30:00pm'),
         ))->setIsOpen(FALSE)->setMessages(['xyz']),
         (new OhOccurrence(
-          new DrupalDateTime('1 oct 2019 1:30:00pm'),
-          new DrupalDateTime('1 oct 2019 5:00:00pm'),
+          new \DateTime('1 oct 2019 1:30:00pm'),
+          new \DateTime('1 oct 2019 5:00:00pm'),
         ))->setIsOpen(TRUE)->setMessages(['abc']),
       ],
     ];
@@ -254,9 +225,6 @@ class OhFlattenTest extends UnitTestCase {
    *
    * Exception should not be thrown when different time zones are provided.
    *
-   * @param \Drupal\oh\OhOccurrence[] $occurrences
-   *   A series of occurrences to flatten.
-   *
    * @covers ::flattenOccurrences
    */
   public function testFlatteningDifferentTimeZones(): void {
@@ -266,20 +234,20 @@ class OhFlattenTest extends UnitTestCase {
     $occurrences = [
       (new OhOccurrence(
         // Sydney: GMT+10.
-        new DrupalDateTime('1 oct 2019 9:00:00am', new \DateTimeZone('Australia/Sydney')),
-        new DrupalDateTime('1 oct 2019 5:00:00pm', new \DateTimeZone('Australia/Sydney')),
+        new \DateTime('1 oct 2019 9:00:00am', new \DateTimeZone('Australia/Sydney')),
+        new \DateTime('1 oct 2019 5:00:00pm', new \DateTimeZone('Australia/Sydney')),
       ))->setIsOpen(TRUE),
       (new OhOccurrence(
         // Singapore: GMT+8.
         // 11am Sydney time.
-        new DrupalDateTime('1 oct 2019 9:00:00am', new \DateTimeZone('Asia/Singapore')),
-        new DrupalDateTime('1 oct 2019 5:00:00pm', new \DateTimeZone('Asia/Singapore')),
+        new \DateTime('1 oct 2019 9:00:00am', new \DateTimeZone('Asia/Singapore')),
+        new \DateTime('1 oct 2019 5:00:00pm', new \DateTimeZone('Asia/Singapore')),
       ))->setIsOpen(TRUE),
       (new OhOccurrence(
         // Cairo: UTC+2.
         // 11:30am Sydney time.
-        new DrupalDateTime('1 oct 2019 3:30:00am', new \DateTimeZone('Africa/Cairo')),
-        new DrupalDateTime('1 oct 2019 3:45:00am', new \DateTimeZone('Africa/Cairo')),
+        new \DateTime('1 oct 2019 3:30:00am', new \DateTimeZone('Africa/Cairo')),
+        new \DateTime('1 oct 2019 3:45:00am', new \DateTimeZone('Africa/Cairo')),
       ))->setIsOpen(FALSE),
     ];
 

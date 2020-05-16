@@ -2,7 +2,7 @@
 
 namespace Drupal\oh;
 
-use Drupal\Core\Datetime\DrupalDateTime;
+use DateTimeInterface;
 
 /**
  * Defines a date range.
@@ -12,29 +12,29 @@ class OhDateRange {
   /**
    * The start date.
    *
-   * @var \Drupal\Core\Datetime\DrupalDateTime
+   * @var \DateTimeInterface
    */
   protected $start;
 
   /**
    * The end date.
    *
-   * @var \Drupal\Core\Datetime\DrupalDateTime
+   * @var \DateTimeInterface
    */
   protected $end;
 
   /**
    * Constructs a new OhDateRange.
    *
-   * @param \Drupal\Core\Datetime\DrupalDateTime $start
+   * @param \DateTimeInterface $start
    *   The start date.
-   * @param \Drupal\Core\Datetime\DrupalDateTime $end
+   * @param \DateTimeInterface $end
    *   The end date.
    *
    * @throws \InvalidArgumentException
    *   When there is a problem with the start and/or end date.
    */
-  public function __construct(DrupalDateTime $start, DrupalDateTime $end) {
+  public function __construct(DateTimeInterface $start, DateTimeInterface $end) {
     $this->setStart($start);
     $this->setEnd($end);
   }
@@ -42,17 +42,17 @@ class OhDateRange {
   /**
    * Get the start date.
    *
-   * @return \Drupal\Core\Datetime\DrupalDateTime
+   * @return \DateTimeInterface
    *   The start date.
    */
-  public function getStart(): DrupalDateTime {
+  public function getStart(): DateTimeInterface {
     return $this->start;
   }
 
   /**
    * Set the start date.
    *
-   * @param \Drupal\Core\Datetime\DrupalDateTime $start
+   * @param \DateTimeInterface $start
    *   The start date.
    *
    * @return $this
@@ -61,7 +61,7 @@ class OhDateRange {
    * @throws \InvalidArgumentException
    *   When there is a problem with the start and/or end date.
    */
-  public function setStart(DrupalDateTime $start) {
+  public function setStart(DateTimeInterface $start) {
     // Clone to ensure references are lost.
     $this->start = clone $start;
     $this->validateDates();
@@ -71,17 +71,17 @@ class OhDateRange {
   /**
    * Get the end date.
    *
-   * @return \Drupal\Core\Datetime\DrupalDateTime
+   * @return \DateTimeInterface
    *   The end date.
    */
-  public function getEnd(): DrupalDateTime {
+  public function getEnd(): DateTimeInterface {
     return $this->end;
   }
 
   /**
    * Set the end date.
    *
-   * @param \Drupal\Core\Datetime\DrupalDateTime $end
+   * @param \DateTimeInterface $end
    *   The end date.
    *
    * @return $this
@@ -90,7 +90,7 @@ class OhDateRange {
    * @throws \InvalidArgumentException
    *   When there is a problem with the start and/or end date.
    */
-  public function setEnd(DrupalDateTime $end) {
+  public function setEnd(DateTimeInterface $end) {
     // Clone to ensure references are lost.
     $this->end = clone $end;
     $this->validateDates();
@@ -120,9 +120,7 @@ class OhDateRange {
         throw new \InvalidArgumentException('Provided dates must be in same timezone.');
       }
 
-      $start = OhUtility::toPhpDateTime($this->start);
-      $end = OhUtility::toPhpDateTime($this->end);
-      if ($end < $start) {
+      if ($this->end < $this->start) {
         throw new \InvalidArgumentException('End date must not occur before start date.');
       }
     }
@@ -158,15 +156,15 @@ class OhDateRange {
    *   Thrown if this date range exceeds the boundaries of the outer date range.
    */
   public function isWithin(OhDateRange $innerRange, bool $partial = FALSE): bool {
-    $outerStart = OhUtility::toPhpDateTime($this->start);
-    $outerEnd = OhUtility::toPhpDateTime($this->end);
+    $outerStart = $this->start;
+    $outerEnd = $this->end;
 
-    $innerStart = OhUtility::toPhpDateTime($innerRange->getStart());
-    $innerEnd = OhUtility::toPhpDateTime($innerRange->getEnd());
+    $innerStart = $innerRange->getStart();
+    $innerEnd = $innerRange->getEnd();
 
     if ($partial) {
       // Either inner value must be within.
-      if ($innerStart < $outerStart && $innerEnd > $outerEnd) {
+      if ($innerEnd < $outerStart || $innerStart >= $outerEnd) {
         throw new \Exception('Either inner value is not within outer dates.');
       }
     }

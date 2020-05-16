@@ -4,7 +4,6 @@ namespace Drupal\oh_review\Form;
 
 use Drupal\Core\Cache\CacheableMetadata;
 use Drupal\Core\Config\ConfigFactoryInterface;
-use Drupal\Core\Datetime\DrupalDateTime;
 use Drupal\Core\Entity\EntityInterface;
 use Drupal\Core\Form\FormBase;
 use Drupal\Core\Form\FormStateInterface;
@@ -210,10 +209,10 @@ class OhReviewSidebarForm extends FormBase {
   /**
    * Get the range start date.
    *
-   * @return \Drupal\Core\Datetime\DrupalDateTime
+   * @return \DateTime
    *   The range start date.
    */
-  protected function getRangeStart(): DrupalDateTime {
+  protected function getRangeStart(): \DateTime {
     $dayMap = [
       'Sunday',
       'Monday',
@@ -229,9 +228,9 @@ class OhReviewSidebarForm extends FormBase {
       ->get('first_day');
     $firstDayStr = $dayMap[$firstDayInt];
     // Today day int.
-    $today = (new DrupalDateTime())->format('w');
+    $today = (new \DateTime())->format('w');
     $weekStartString = ($today == $firstDayInt ? '' : 'last ') . $firstDayStr . ' 00:00';
-    return new DrupalDateTime($weekStartString);
+    return new \DateTime($weekStartString);
   }
 
 }

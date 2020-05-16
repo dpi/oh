@@ -1,11 +1,14 @@
 <?php
 
-namespace Drupal\Tests\oh\Kernel;
+declare(strict_types = 1);
+
+namespace Drupal\Tests\oh\Unit;
 
 use Drupal\Core\Cache\CacheableMetadata;
-use Drupal\Core\Datetime\DrupalDateTime;
-use Drupal\KernelTests\KernelTestBase;
+use Drupal\Core\Cache\Context\CacheContextsManager;
+use Drupal\Core\DependencyInjection\ContainerBuilder;
 use Drupal\oh\OhOccurrence;
+use Drupal\Tests\UnitTestCase;
 
 /**
  * Tests OhOccurrence class.
@@ -13,14 +16,14 @@ use Drupal\oh\OhOccurrence;
  * @group oh
  * @coversDefaultClass \Drupal\oh\OhOccurrence
  */
-class OhOccurrenceTest extends KernelTestBase {
+class OhOccurrenceTest extends UnitTestCase {
 
   /**
    * Test message default value.
    *
    * @covers ::getMessages
    */
-  public function testMessageDefault() {
+  public function testMessageDefault(): void {
     $occurrence = $this->createOccurrence();
     $this->assertEquals([], $occurrence->getMessages());
   }
@@ -30,7 +33,7 @@ class OhOccurrenceTest extends KernelTestBase {
    *
    * @covers ::getMessages
    */
-  public function testMessageSetter() {
+  public function testMessageSetter(): void {
     $occurrence = $this->createOccurrence();
     $text = $this->randomMachineName();
     $occurrence->addMessage($text);
@@ -45,7 +48,7 @@ class OhOccurrenceTest extends KernelTestBase {
    *
    * @covers ::isOpen
    */
-  public function testIsOpenDefault() {
+  public function testIsOpenDefault(): void {
     $occurrence = $this->createOccurrence();
     $this->assertFalse($occurrence->isOpen(), 'Default value is false');
   }
@@ -55,7 +58,7 @@ class OhOccurrenceTest extends KernelTestBase {
    *
    * @covers ::setIsOpen
    */
-  public function testIsOpenSetter() {
+  public function testIsOpenSetter(): void {
     $occurrence = $this->createOccurrence();
 
     $occurrence->setIsOpen(TRUE);
@@ -72,7 +75,15 @@ class OhOccurrenceTest extends KernelTestBase {
    * @covers ::getCacheTags
    * @covers ::getCacheMaxAge
    */
-  public function testCachability() {
+  public function testCachability(): void {
+    $cacheContextsManager = $this->getMockBuilder(CacheContextsManager::class)
+      ->disableOriginalConstructor()
+      ->getMock();
+    $cacheContextsManager->method('assertValidTokens')->willReturn(TRUE);
+    $container = new ContainerBuilder();
+    $container->set('cache_contexts_manager', $cacheContextsManager);
+    \Drupal::setContainer($container);
+
     $occurrence = $this->createOccurrence();
 
     $contexts = ['user.roles'];
@@ -102,8 +113,8 @@ class OhOccurrenceTest extends KernelTestBase {
     // Args are hard coded since occurrences don't implement any new constructor
     // args over OhDateRange class.
     $args = [
-      new DrupalDateTime('yesterday'),
-      new DrupalDateTime('tomorrow'),
+      new \DateTime('yesterday'),
+      new \DateTime('tomorrow'),
     ];
     return new OhOccurrence(...$args);
   }
