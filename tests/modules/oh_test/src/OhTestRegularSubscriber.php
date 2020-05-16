@@ -51,6 +51,15 @@ class OhTestRegularSubscriber implements EventSubscriberInterface {
       }
 
     }
+
+    if (in_array('Open 9-5 13 February 1998 Singapore', $this->scenarios)) {
+      $occurrence = (new OhOccurrence(
+        new \DateTime('9am 13 February 1998', new \DateTimeZone('Asia/Singapore')),
+        new \DateTime('5pm 13 February 1998', new \DateTimeZone('Asia/Singapore'))
+      ))
+        ->setIsOpen(TRUE);
+      $event->addRegularHours($occurrence);
+    }
   }
 
   /**

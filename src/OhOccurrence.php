@@ -146,4 +146,23 @@ class OhOccurrence extends OhDateRange implements RefinableCacheableDependencyIn
     return $this->getEnd() > $dayAfterStart;
   }
 
+  /**
+   * Modifies start and end date so they are within a range.
+   *
+   * @param \Drupal\oh\OhDateRange $range
+   *   A range to modify the range of this occurrence to.
+   *
+   * @return $this
+   *   Return object for chaining.
+   */
+  public function trimWithinRange(OhDateRange $range) {
+    if ($this->start < $range->start) {
+      $this->start = $range->start;
+    }
+    if ($this->end > $range->end) {
+      $this->end = $range->end;
+    }
+    return $this;
+  }
+
 }

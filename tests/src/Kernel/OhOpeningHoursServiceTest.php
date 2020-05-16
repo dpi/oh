@@ -18,6 +18,8 @@ use Drupal\oh\OhOpeningHoursInterface;
  */
 class OhOpeningHoursServiceTest extends KernelTestBase {
 
+  use OhTestTrait;
+
   /**
    * {@inheritdoc}
    */
@@ -135,6 +137,24 @@ class OhOpeningHoursServiceTest extends KernelTestBase {
   }
 
   /**
+   * Tests exception thrown when occurrence added out of range.
+   */
+  public function testExceptionOutOfRangeUntrimmed() {
+    $entity = EntityTest::create([
+      'name' => $this->randomMachineName(),
+    ]);
+    $this->setRegularScenarios(['Open 9-5 13 February 1998 Singapore']);
+
+    $start = new \DateTime('1 Jan 2015 00:00');
+    $end = new \DateTime('1 Jan 2016 00:00');
+    $range = new OhDateRange($start, $end);
+
+    $this->expectException(\Exception::class);
+    $this->expectExceptionMessage('Inner date starts before outer date.');
+    $this->openingHoursService()->getRegularHours($entity, $range);
+  }
+
+  /**
    * Opening hours service.
    *
    * @return \Drupal\oh\OhOpeningHoursInterface
@@ -142,28 +162,6 @@ class OhOpeningHoursServiceTest extends KernelTestBase {
    */
   protected function openingHoursService(): OhOpeningHoursInterface {
     return $this->container->get('oh.opening_hours');
-  }
-
-  /**
-   * Set the scenarios for regular test service.
-   *
-   * @param array $scenarios
-   *   A list of scenarios.
-   */
-  protected function setRegularScenarios(array $scenarios): void {
-    $this->container->get('oh_test.regular')
-      ->setScenarios($scenarios);
-  }
-
-  /**
-   * Set the scenarios for exception test service.
-   *
-   * @param array $scenarios
-   *   A list of scenarios.
-   */
-  protected function setExceptionScenarios(array $scenarios): void {
-    $this->container->get('oh_test.exceptions')
-      ->setScenarios($scenarios);
   }
 
   /**

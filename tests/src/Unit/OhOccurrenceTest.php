@@ -7,6 +7,7 @@ namespace Drupal\Tests\oh\Unit;
 use Drupal\Core\Cache\CacheableMetadata;
 use Drupal\Core\Cache\Context\CacheContextsManager;
 use Drupal\Core\DependencyInjection\ContainerBuilder;
+use Drupal\oh\OhDateRange;
 use Drupal\oh\OhOccurrence;
 use Drupal\Tests\UnitTestCase;
 
@@ -101,6 +102,26 @@ class OhOccurrenceTest extends UnitTestCase {
     $this->assertEquals($contexts, $cachable->getCacheContexts());
     $this->assertEquals($tags, $cachable->getCacheTags());
     $this->assertEquals($maxAge, $cachable->getCacheMaxAge());
+  }
+
+  /**
+   * Test a occurrence is range is trimmed off.
+   *
+   * @covers ::trimWithinRange
+   */
+  public function testTrimWithinRange(): void {
+    $occurrence = new OhOccurrence(
+      new \DateTime('7am 13 February 1998'),
+      new \DateTime('9pm 13 February 1998')
+    );
+
+    $occurrence->trimWithinRange(new OhDateRange(
+      new \DateTime('9am 13 February 1998'),
+      new \DateTime('5pm 13 February 1998')
+    ));
+
+    $this->assertEquals(new \DateTime('9am 13 February 1998'), $occurrence->getStart());
+    $this->assertEquals(new \DateTime('5pm 13 February 1998'), $occurrence->getEnd());
   }
 
   /**

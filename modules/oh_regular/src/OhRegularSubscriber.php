@@ -57,6 +57,7 @@ class OhRegularSubscriber implements EventSubscriberInterface {
             $itemOccurrence->getEnd()
           );
           $occurrence
+            ->trimWithinRange($range)
             ->addCacheableDependency($entity)
             ->setIsOpen(TRUE);
           $event->addRegularHours($occurrence);
