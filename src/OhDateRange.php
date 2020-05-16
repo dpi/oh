@@ -46,7 +46,7 @@ class OhDateRange {
    *   The start date.
    */
   public function getStart(): DateTimeInterface {
-    return $this->start;
+    return clone $this->start;
   }
 
   /**
@@ -75,7 +75,7 @@ class OhDateRange {
    *   The end date.
    */
   public function getEnd(): DateTimeInterface {
-    return $this->end;
+    return clone $this->end;
   }
 
   /**

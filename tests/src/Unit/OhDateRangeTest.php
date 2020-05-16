@@ -185,6 +185,38 @@ class OhDateRangeTest extends UnitTestCase {
   }
 
   /**
+   * Test getter mutability.
+   *
+   * @covers ::getStart
+   */
+  public function testGetStartMutation() {
+    $start = new \DateTime('yesterday', new \DateTimezone('Australia/Sydney'));
+    $original = clone $start;
+    $end = new \DateTime('tomorrow', new \DateTimezone('Australia/Sydney'));
+
+    $range = $this->createDateRange($start, $end);
+    $gotten = $range->getStart();
+    $gotten->modify('+1 year');
+    $this->assertEquals($original, $range->getStart());
+  }
+
+  /**
+   * Test getter mutability.
+   *
+   * @covers ::getEnd
+   */
+  public function testGetEndMutation() {
+    $start = new \DateTime('yesterday', new \DateTimezone('Australia/Sydney'));
+    $end = new \DateTime('tomorrow', new \DateTimezone('Australia/Sydney'));
+    $original = clone $end;
+
+    $range = $this->createDateRange($start, $end);
+    $gotten = $range->getEnd();
+    $gotten->modify('+1 year');
+    $this->assertEquals($original, $range->getEnd());
+  }
+
+  /**
    * Create a new range.
    *
    * @param array $args
