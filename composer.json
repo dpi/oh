@@ -15,11 +15,12 @@
   },
   "require": {
     "php": "~7.1",
-    "drupal/date_recur": "^2"
+    "drupal/core": "^8 || ^9",
+    "drupal/date_recur": "^2 || ^3"
   },
   "require-dev": {
     "drupal/coder": "^8.2.12",
-    "phpunit/phpunit": "^6.5 || ^7",
+    "phpunit/phpunit": "^7",
     "squizlabs/php_codesniffer": "^2.7|^3.0"
   },
   "repositories": [

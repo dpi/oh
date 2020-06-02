@@ -38,7 +38,8 @@ class OhOpeningHoursServiceTest extends KernelTestBase {
     $end = new \DateTime('31 Dec 2016 00:00');
     $range = new OhDateRange($start, $end);
 
-    $this->setExpectedException(\Exception::class, 'Inner date starts before outer date.');
+    $this->expectException(\Exception::class);
+    $this->expectExceptionMessage('Inner date starts before outer date.');
     $this->openingHoursService()->getOccurrences($entity, $range);
   }
 

@@ -17,7 +17,7 @@ class OhDateRangeTest extends UnitTestCase {
    * Test message default value.
    */
   public function testRequiredConstructors() {
-    $this->setExpectedException(\ArgumentCountError::class);
+    $this->expectException(\ArgumentCountError::class);
     $this->createDateRange();
   }
 
@@ -50,7 +50,8 @@ class OhDateRangeTest extends UnitTestCase {
 
     // Change the timezone.
     $end = new \DateTime('tomorrow', new \DateTimezone('Australia/Perth'));
-    $this->setExpectedException(\InvalidArgumentException::class, 'Provided dates must be in same timezone.');
+    $this->expectException(\InvalidArgumentException::class);
+    $this->expectExceptionMessage('Provided dates must be in same timezone.');
     $this->createDateRange($start, $end);
   }
 
@@ -77,7 +78,8 @@ class OhDateRangeTest extends UnitTestCase {
     $start = new \DateTime('Monday 12:00:01');
     $end = new \DateTime('Monday 12:00:00');
 
-    $this->setExpectedException(\InvalidArgumentException::class, 'End date must not occur before start date.');
+    $this->expectException(\InvalidArgumentException::class);
+    $this->expectExceptionMessage('End date must not occur before start date.');
     $this->createDateRange($start, $end);
   }
 
@@ -144,7 +146,8 @@ class OhDateRangeTest extends UnitTestCase {
     $innerEnd = new \DateTime('31 October 2016');
     $innerRange = $this->createDateRange($innerStart, $innerEnd);
 
-    $this->setExpectedException(\Exception::class, 'Inner date starts before outer date.');
+    $this->expectException(\Exception::class);
+    $this->expectExceptionMessage('Inner date starts before outer date.');
     $outerRange->isWithin($innerRange);
   }
 
@@ -162,7 +165,8 @@ class OhDateRangeTest extends UnitTestCase {
     $innerEnd = new \DateTime('31 October 2017');
     $innerRange = $this->createDateRange($innerStart, $innerEnd);
 
-    $this->setExpectedException(\Exception::class, 'Inner date starts after outer date.');
+    $this->expectException(\Exception::class);
+    $this->expectExceptionMessage('Inner date starts after outer date.');
     $outerRange->isWithin($innerRange);
   }
 
@@ -180,7 +184,8 @@ class OhDateRangeTest extends UnitTestCase {
     $innerEnd = new \DateTime('31 October 2017');
     $innerRange = $this->createDateRange($innerStart, $innerEnd);
 
-    $this->setExpectedException(\Exception::class, 'Inner date ends after outer date.');
+    $this->expectException(\Exception::class);
+    $this->expectExceptionMessage('Inner date ends after outer date.');
     $outerRange->isWithin($innerRange);
   }
 
