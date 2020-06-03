@@ -6,5 +6,5 @@ dependencies:
   - oh:oh_regular
   - drupal:contextual
   - drupal:settings_tray
-core: 8.x
+core_version_requirement: ^8.8 || ^9
 php: 7.1

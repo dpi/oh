@@ -4,5 +4,5 @@ description: 'Regular hours implementation and field mapping'
 dependencies:
   - date_recur:date_recur
   - oh:oh
-core: 8.x
+core_version_requirement: ^8.8 || ^9
 php: 7.1

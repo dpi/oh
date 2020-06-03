@@ -3,4 +3,4 @@ type: module
 dependencies:
   - oh:oh
 package: Testing
-core: 8.x
+core_version_requirement: ^8.8 || ^9
