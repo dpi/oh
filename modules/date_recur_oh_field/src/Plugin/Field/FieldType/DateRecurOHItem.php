@@ -16,7 +16,12 @@ use Drupal\date_recur\Plugin\Field\FieldType\DateRecurItem;
  *   description = @Translation("Date recur field with opening hours."),
  *   default_widget = "date_recur_basic_widget",
  *   default_formatter = "date_recur_basic_formatter",
- *   list_class = "\Drupal\date_recur\Plugin\Field\FieldType\DateRecurFieldItemList"
+ *   list_class = "\Drupal\date_recur\Plugin\Field\FieldType\DateRecurFieldItemList",
+ *   constraints = {
+ *     "DateRecurRrule" = {},
+ *     "DateRecurRuleParts" = {},
+ *     "DateRecurOhStatus" = {},
+ *   }
  * )
  */
 class DateRecurOHItem extends DateRecurItem {

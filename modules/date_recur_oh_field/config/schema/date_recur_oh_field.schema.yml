@@ -1,0 +1,5 @@
+field.storage_settings.date_recur_oh:
+  type: field.storage_settings.date_recur
+
+field.field_settings.date_recur_oh:
+  type: field.field_settings.date_recur
